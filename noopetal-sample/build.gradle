@@ -1,0 +1,37 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility rootProject.ext.sourceCompatibilityVersion
+        targetCompatibility rootProject.ext.targetCompatibilityVersion
+    }
+
+    defaultConfig {
+        applicationId 'com.pij.nootptal.example'
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled true
+        }
+    }
+}
+
+dependencies {
+    compile deps.supportAnnotations
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile project(':noopetal-annotations')
+    apt project(':noopetal-compiler')
+
+    testCompile deps.junit
+    testCompile deps.truth
+    testCompile deps.robolectric
+}

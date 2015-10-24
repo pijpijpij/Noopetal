@@ -1,0 +1,18 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+dependencies {
+    compile project(':noopetal-annotations')
+    compile deps.autoservice
+    compile deps.autocommon
+    compile deps.javapoet
+    compile deps.supportAnnotations
+    compile deps.commonsLang
+
+    testCompile deps.junit
+    testCompile deps.truth
+    testCompile deps.robolectric
+    testCompile deps.compiletesting
+    testCompile files(org.gradle.internal.jvm.Jvm.current().getToolsJar())
+}
+
