@@ -1,6 +1,6 @@
 subprojects { project ->
-    group = GROUP
-    version = VERSION_NAME
+    group = "com.pij"
+    version = "0.0.1-SNAPSHOT"
 
     buildscript {
         dependencies {

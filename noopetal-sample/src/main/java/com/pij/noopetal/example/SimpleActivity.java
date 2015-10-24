@@ -36,6 +36,7 @@ public class SimpleActivity extends Activity {
         }
     };
 
+    DummyContainer.InnerInterface dummy = new DummyContainer$InnerInterfaceNoop();
     @Bind(R.id.title)
     TextView title;
     @Bind(R.id.subtitle)

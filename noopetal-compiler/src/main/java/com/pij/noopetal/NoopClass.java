@@ -45,7 +45,8 @@ final class NoopClass {
 
     @NonNull
     public TypeSpec getTypeSpec() {
-        TypeSpec.Builder result = TypeSpec.classBuilder(className).addModifiers(getAccessModifier());
+        TypeSpec.Builder result = TypeSpec.classBuilder(className);
+        addAccessModifiers(result);
         result.addJavadoc(createGeneratedAnnotation().toString());
         result.addSuperinterface(TypeName.get(superType.asType()));
 
@@ -57,6 +58,11 @@ final class NoopClass {
         }
 
         return result.build();
+    }
+
+    private void addAccessModifiers(TypeSpec.Builder result) {
+        final Modifier modifier = getAccessModifier();
+        if (modifier != null) result.addModifiers(modifier);
     }
 
     private MethodSpec.Builder createOverridingMethod(ExecutableElement element) {
@@ -90,13 +96,14 @@ final class NoopClass {
     @NonNull
     private AnnotationSpec createGeneratedAnnotation() {
         return AnnotationSpec.builder(Generated.class)
-                             .addMember("value", "\"$N\"",
+                             .addMember("value",
+                                        "\"$N\"",
                                         TypeSpec.classBuilder(processorClass.getCanonicalName()).build())
                              .build();
     }
 
     /**
-     * @return the accessor modifier of the supertype.
+     * @return the access modifier of the supertype.
      */
     private Modifier getAccessModifier() {
         final Set<Modifier> modifiers = superType.getModifiers();
@@ -108,6 +115,6 @@ final class NoopClass {
                     return modifier;
             }
         }
-        return Modifier.DEFAULT;
+        return null;
     }
 }
