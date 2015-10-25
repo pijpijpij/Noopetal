@@ -7,7 +7,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
- * Indicates a No operation implementatioin of the class is to be provided.
+ * Indicates a No-operation implementation of the class is to be provided.
  * <pre><code>
  * {@literal @}Noop
  * interface MyExample {
@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * Later the class can be used:
  * <pre><code>
  * //..
- * private defaultExample = new MyExample.Noop();
+ * private MyExample defaultExample = new MyExampleNoop();
  * </code></pre>
  */
 @Retention(SOURCE)
