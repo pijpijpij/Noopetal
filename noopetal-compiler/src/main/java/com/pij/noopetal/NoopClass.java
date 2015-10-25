@@ -20,7 +20,7 @@ import javax.lang.model.type.TypeMirror;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-final class NoopClass {
+final class NoopClass implements GeneratedClass {
 
     private final String classPackage;
     private final String className;
@@ -35,14 +35,17 @@ final class NoopClass {
         this.superType = notNull(superType);
     }
 
+    @Override
     public TypeElement getSuperType() {
         return superType;
     }
 
+    @Override
     public String getClassPackage() {
         return classPackage;
     }
 
+    @Override
     @NonNull
     public TypeSpec getTypeSpec() {
         TypeSpec.Builder result = TypeSpec.classBuilder(className);
