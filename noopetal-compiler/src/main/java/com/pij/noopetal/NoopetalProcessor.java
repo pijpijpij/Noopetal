@@ -19,6 +19,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
@@ -29,6 +30,7 @@ import static javax.tools.Diagnostic.Kind.ERROR;
 public final class NoopetalProcessor extends AbstractProcessor {
 
     private static final String NOOP_CLASS_SUFFIX = "Noop";
+    private static final String DECOR_CLASS_SUFFIX = "Decorating";
 
     private Elements elementUtils;
     private Types typeUtils;
@@ -43,6 +45,7 @@ public final class NoopetalProcessor extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> result = new LinkedHashSet<>();
         result.add(Noop.class.getCanonicalName());
+        result.add(Decor.class.getCanonicalName());
         return result;
     }
 
@@ -61,24 +64,61 @@ public final class NoopetalProcessor extends AbstractProcessor {
     }
 
     @Override
-    public boolean process(Set<? extends TypeElement> elements, RoundEnvironment env) {
-        Set<NoopClass> targetClasses = findAndParseTargets(env);
+    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
+        if (env.processingOver() || env.errorRaised()) return false;
 
-        for (NoopClass target : targetClasses) {
-            final JavaFile file = JavaFile.builder(target.getClassPackage(), target.getTypeSpec()).build();
-            try {
-                file.writeTo(filer);
-            } catch (IOException e) {
-                TypeElement typeElement = target.getSuperType();
-                error(typeElement, "Unable to write Noop implementation of type %s: %s", typeElement, e.getMessage());
+        for (TypeElement annotationElement : annotations) {
+            final TypeMirror annotation = annotationElement.asType();
+            if (typeUtils.isSameType(annotation, getNoopTypeMirror())) {
+                processNoop(env);
+            } else if (typeUtils.isSameType(annotation, getDecorTypeMirror())) {
+                processDecor(env);
             }
         }
 
         return true;
     }
 
-    private Set<NoopClass> findAndParseTargets(RoundEnvironment env) {
-        Set<NoopClass> targetClasses = new LinkedHashSet<>();
+    private TypeMirror getDecorTypeMirror() {
+        final TypeElement decorTypeElement = elementUtils.getTypeElement(Decor.class.getCanonicalName());
+        return decorTypeElement.asType();
+    }
+
+    private TypeMirror getNoopTypeMirror() {
+        final TypeElement noopTypeElement = elementUtils.getTypeElement(Noop.class.getCanonicalName());
+        return noopTypeElement.asType();
+    }
+
+    private void processNoop(RoundEnvironment env) {
+        Set<GeneratedClass> targetClasses = findAndParseNoopTargets(env);
+
+        createFiles(targetClasses);
+    }
+
+    private void processDecor(RoundEnvironment env) {
+        Set<GeneratedClass> targetClasses = findAndParseDecorTargets(env);
+
+        createFiles(targetClasses);
+    }
+
+    private void createFiles(Set<GeneratedClass> sourceClasses) {
+        for (GeneratedClass source : sourceClasses) {
+            createFile(source);
+        }
+    }
+
+    private void createFile(GeneratedClass source) {
+        final JavaFile file = JavaFile.builder(source.getClassPackage(), source.getTypeSpec()).build();
+        try {
+            file.writeTo(filer);
+        } catch (IOException e) {
+            TypeElement typeElement = source.getSuperType();
+            error(typeElement, "Unable to write Noop implementation of type %s: %s", typeElement, e.getMessage());
+        }
+    }
+
+    private Set<GeneratedClass> findAndParseNoopTargets(RoundEnvironment env) {
+        Set<GeneratedClass> targetClasses = new LinkedHashSet<>();
 
         // Process each @Noop element.
         for (Element element : env.getElementsAnnotatedWith(Noop.class)) {
@@ -96,14 +136,49 @@ public final class NoopetalProcessor extends AbstractProcessor {
         return targetClasses;
     }
 
+    private Set<GeneratedClass> findAndParseDecorTargets(RoundEnvironment env) {
+        Set<GeneratedClass> targetClasses = new LinkedHashSet<>();
+
+        // Process each @Decor element.
+        for (Element element : env.getElementsAnnotatedWith(Decor.class)) {
+            // Not too sure what this extra validation does, especially since it doesn't log what's wrong, but Wharton
+            // has it in Butterknife.
+            if (SuperficialValidation.validateElement(element) && validateDecorTarget(element)) {
+                try {
+                    parseDecor(element, targetClasses);
+                } catch (Exception e) {
+                    logParsingError(element, Decor.class, e);
+                }
+            }
+        }
+
+        return targetClasses;
+    }
+
     /**
-     * @return <code>true</code> if the element is a valid target thee {@link Noop} annotation.
+     * @return <code>true</code> if the element is a valid target of the {@link Noop} annotation.
      */
     private boolean validateNoopTarget(Element element) {
+        return validateAnnotatedIsInterface(element, Noop.class);
+    }
+
+    /**
+     * @return <code>true</code> if the element is a valid target of the {@link Decor} annotation.
+     */
+    private boolean validateDecorTarget(Element element) {
+        return validateAnnotatedIsInterface(element, Decor.class);
+    }
+
+    /**
+     * @return <code>true</code> if the element is an interface
+     */
+    private boolean validateAnnotatedIsInterface(Element annotated, Class<?> annotation) {
         boolean hasError = false;
-        if (element.getKind() != INTERFACE) {
-            error(element, "@%s must only be applied to an interface. %s isn't", Noop.class.getSimpleName(),
-                  element.getSimpleName());
+        if (annotated.getKind() != INTERFACE) {
+            error(annotated,
+                  "@%s must only be applied to an interface. %s isn't",
+                  annotation.getSimpleName(),
+                  annotated.getSimpleName());
             hasError = true;
         }
         return !hasError;
@@ -118,11 +193,22 @@ public final class NoopetalProcessor extends AbstractProcessor {
     /**
      * This is where information about the annotation should be/is gathered.
      */
-    private void parseNoop(Element element, Set<NoopClass> targetClasses) {
+    private void parseNoop(Element element, Set<GeneratedClass> targetClasses) {
         // Nothin much to gather: there's no option/ value to gather...
         TypeElement typeElement = (TypeElement)element;
 
-        NoopClass result = createNoopClass(typeElement);
+        GeneratedClass result = createNoopClass(typeElement);
+        targetClasses.add(result);
+    }
+
+    /**
+     * This is where information about the annotation should be/is gathered.
+     */
+    private void parseDecor(Element element, Set<GeneratedClass> targetClasses) {
+        // Nothin much to gather: there's no option/ value to gather...
+        TypeElement typeElement = (TypeElement)element;
+
+        GeneratedClass result = createDecorClass(typeElement);
         targetClasses.add(result);
     }
 
@@ -131,11 +217,23 @@ public final class NoopetalProcessor extends AbstractProcessor {
      * @param element assumed valid
      * @return a representation of the generated class
      */
-    private NoopClass createNoopClass(TypeElement element) {
+    private GeneratedClass createNoopClass(TypeElement element) {
         String classPackage = getPackageName(element);
         String className = getClassName(element, classPackage) + NOOP_CLASS_SUFFIX;
 
         return new NoopClass(classPackage, className, element, this);
+    }
+
+    /**
+     * Assumes the element is valid.
+     * @param element assumed valid
+     * @return a representation of the generated class
+     */
+    private GeneratedClass createDecorClass(TypeElement element) {
+        String classPackage = getPackageName(element);
+        String className = getClassName(element, classPackage) + DECOR_CLASS_SUFFIX;
+
+        return new DecorClass(classPackage, className, element, this);
     }
 
     private void error(Element element, String message, Object... args) {
