@@ -1,18 +1,14 @@
 Butter Knife
 ============
 
-![Logo](website/static/logo.png)
+![Logo](miscellaneous/logo.png)
 
-TBW
+Generation of standard classes from interfaces:
 
-Field and method binding for Android views which uses annotation processing to generate boilerplate
-code for you.
-
- * Eliminate `findViewById` calls by using `@Bind` on fields.
- * Group multiple views in a list or array. Operate on all of them at once with actions,
-   setters, or properties.
- * Eliminate anonymous inner-classes for listeners by annotating methods with `@OnClick` and others.
- * Eliminate resource lookups by using resource annotations on fields.
+ * `@Noop` generates a class that does nothing and returned default values (0 or <code>null</code>). Classes of that kind are 
+   often used as the base for classes that only handle certain event/method calls of th eparent interface.
+ * `@Decor` generates a class that passes all calls to another implementation of the interface. Really useful to
+   create decorators.
 
 ```java
 package com.company.example;
@@ -71,7 +67,7 @@ For the SNAPSHOT version:
 <dependency>
   <groupId>com.pij</groupId>
   <artifactId>com.pij.noopetal</artifactId>
-  <version>8.0.0-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
 </dependency>
 <dependency>
   <groupId>com.pij</groupId>

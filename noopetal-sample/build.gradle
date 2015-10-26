@@ -26,7 +26,7 @@ android {
 }
 
 dependencies {
-    compile deps.supportAnnotations
+    compile deps.support_annotations
     compile 'com.jakewharton:butterknife:7.0.1'
     compile project(':noopetal-annotations')
     apt project(':noopetal-compiler')

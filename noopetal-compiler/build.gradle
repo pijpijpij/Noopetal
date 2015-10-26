@@ -6,9 +6,9 @@ dependencies {
     compile deps.autoservice
     compile deps.autocommon
     compile deps.javapoet
-    compile deps.supportAnnotations
-    compile deps.commonsLang
-    compile deps.commonsColl
+    compile deps.support_annotations
+    compile deps.commons_lang
+    compile deps.commons_collections
 
     testCompile deps.junit
     testCompile deps.truth
