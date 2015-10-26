@@ -1,5 +1,4 @@
-Noop et Al
-============
+# Noop et Al
 
 ![Logo](miscellaneous/logo.jpg)
 
@@ -64,15 +63,13 @@ public class DecoratingExampleInterface {
 }
 ```
 
+## Next features
+Generate a decorator for non-final classes with non-final public methods.
 
-Download
---------
+## Download
+Only source download available, from this site!
 
-No download available.
-
-Usage
---------
-
+## Usage
 To use, download the source for the version of interest build it and install it in your local Maven repository.
 Then, in a Maven project:
 ```xml
@@ -101,7 +98,7 @@ For the SNAPSHOT version:
   <optional>true</optional>
 </dependency>
 ```
-or Gradle:
+or Gradle for an Android project:
 ```groovy
 buildscript {
   dependencies {
@@ -119,9 +116,7 @@ dependencies {
 
 Finally, I started that project from [Butterknife](https://github.com/JakeWharton/butterknife)'s annotation processor.
 
-License
--------
-
+## My License
     Copyright 2015 PJ Champault
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -137,9 +132,7 @@ License
     limitations under the License.
 
 
-License
--------
-
+## Other Licenses
     Copyright 2013 Jake Wharton
 
     Licensed under the Apache License, Version 2.0 (the "License");
