@@ -1,7 +1,7 @@
-Butter Knife
+Noop et Al
 ============
 
-![Logo](miscellaneous/logo.png)
+![Logo](miscellaneous/logo.jpg)
 
 Generation of standard classes from interfaces:
 
