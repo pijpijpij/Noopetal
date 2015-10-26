@@ -201,4 +201,83 @@ public class DecorTest {
         assertGeneration(source, expected);
     }
 
+    @Test
+    public void test_methodWithOneVarargArgument_CompilesAndGeneratesPassesArgumentToDecorated() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               asList(addAll(STANDARD_SOURCE_HEADER,
+                                                             "void oneArgMethod(String... anArg);",
+                                                             "}")));
+        JavaFileObject expected = forSourceLines("test/DecoratingTest",
+                                                 asList(addAll(STANDARD_EXPECTED_HEADER,
+                                                               "@Override",
+                                                               "public void oneArgMethod(String... anArg) {",
+                                                               "decorated.oneArgMethod(anArg);",
+                                                               "}",
+                                                               "}")));
+
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_methodWithOneGenericArgument_CompilesAndGeneratesPassesArgumentToDecorated() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               asList(addAll(STANDARD_SOURCE_HEADER,
+                                                             "void oneArgMethod(java.util.List<String> anArg);",
+                                                             "}")));
+        JavaFileObject expected = forSourceLines("test/DecoratingTest",
+                                                 "package test;",
+                                                 "",
+                                                 "import android.support.annotation.NonNull;",
+                                                 "import java.util.List;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class DecoratingTest implements Test {",
+                                                 "",
+                                                 "private final Test decorated;",
+                                                 "",
+                                                 "public DecoratingTest(@NonNull final Test decorated) {",
+                                                 "this.decorated = decorated;",
+                                                 "}",
+                                                 "",
+                                                 "@Override",
+                                                 "public void oneArgMethod(List<String> anArg) {",
+                                                 "decorated.oneArgMethod(anArg);",
+                                                 "}",
+                                                 "}");
+
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_simpleGenericInterface_CompilesAndGeneratesGenericDecorator() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Decor",
+                                               "public interface Test<T> {",
+                                               "void oneArgMethod(String anArg);",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test/DecoratingTest",
+                                                 "package test;",
+                                                 "",
+                                                 "import android.support.annotation.NonNull;",
+                                                 "",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class DecoratingTest<T> implements Test<T> {",
+                                                 "",
+                                                 "private final Test<T> decorated;",
+                                                 "",
+                                                 "public DecoratingTest(@NonNull final Test<T> decorated) {",
+                                                 "this.decorated = decorated;",
+                                                 "}",
+                                                 "",
+                                                 "@Override",
+                                                 "public void oneArgMethod(String anArg) {",
+                                                 "decorated.oneArgMethod(anArg);",
+                                                 "}",
+                                                 "}");
+
+        assertGeneration(source, expected);
+    }
+
 }

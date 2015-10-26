@@ -54,6 +54,7 @@ public class DecorClass implements GeneratedClass {
     public TypeSpec getTypeSpec() {
         TypeSpec.Builder result = TypeSpec.classBuilder(className);
         applyAccessModifier(superType, result);
+        GeneratedClassUtil.applyTypeVariables(superType, result);
         result.addJavadoc(createGeneratedAnnotation(processorClass).toString());
         result.addSuperinterface(getDecoratedTypeName());
 

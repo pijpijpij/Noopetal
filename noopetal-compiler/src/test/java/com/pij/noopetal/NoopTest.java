@@ -183,4 +183,63 @@ public class NoopTest {
         assertGeneration(source, expected);
     }
 
+    @Test
+    public void test_methodWithOneVarargArgument_CompilesAndGenerates() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               asList(addAll(STANDARD_SOURCE_HEADER,
+                                                             "void oneArgMethod(String... anArg);",
+                                                             "}")));
+        JavaFileObject expected = forSourceLines("test/NoopTest",
+                                                 asList(addAll(STANDARD_EXPECTED_HEADER,
+                                                               "@Override",
+                                                               "public void oneArgMethod(String... anArg) {",
+                                                               "}",
+                                                               "}")));
+
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_methodWithOneGenericArgument_CompilesAndGenerates() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               asList(addAll(STANDARD_SOURCE_HEADER,
+                                                             "void oneArgMethod(java.util.List<String> anArg);",
+                                                             "}")));
+        JavaFileObject expected = forSourceLines("test/NoopTest",
+                                                 "package test;",
+                                                 "",
+                                                 "import java.util.List;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class NoopTest implements Test {",
+                                                 "@Override",
+                                                 "public void oneArgMethod(List<String> anArg) {",
+                                                 "}",
+                                                 "}");
+
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_simpleGenericInterface_CompilesAndGeneratesGenericNoop() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Noop",
+                                               "public interface Test<T> {",
+                                               "void oneArgMethod(String anArg);",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test/NoopTest",
+                                                 "package test;",
+                                                 "",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class NoopTest<T> implements Test<T> {",
+                                                 "@Override",
+                                                 "public void oneArgMethod(String anArg) {",
+                                                 "}",
+                                                 "}");
+
+        assertGeneration(source, expected);
+    }
+
 }

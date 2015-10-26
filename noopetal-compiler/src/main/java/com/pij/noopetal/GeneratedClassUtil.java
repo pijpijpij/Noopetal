@@ -5,13 +5,16 @@ import android.support.annotation.Nullable;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.TypeVariableName;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Generated;
 import javax.annotation.processing.Processor;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
@@ -71,6 +74,14 @@ public class GeneratedClassUtil {
                 return "0d";
             default:
                 return "null";
+        }
+    }
+
+    public static void applyTypeVariables(TypeElement source, TypeSpec.Builder target) {
+        final List<? extends TypeParameterElement> sourceParameters = source.getTypeParameters();
+        for (TypeParameterElement sourceParameter : sourceParameters) {
+            TypeVariableName targetParameter = TypeVariableName.get(sourceParameter);
+            target.addTypeVariable(targetParameter);
         }
     }
 }
