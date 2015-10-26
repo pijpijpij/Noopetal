@@ -2,6 +2,7 @@ package com.pij.noopetal;
 
 import android.support.annotation.NonNull;
 
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
@@ -24,6 +25,7 @@ import static org.apache.commons.lang3.Validate.notNull;
  */
 public class DecorClass implements GeneratedClass {
 
+    public static final String DECORATED_FIELD_NAME = "decorated";
     private final String classPackage;
     private final String className;
     private final Class<? extends Processor> processorClass;
@@ -56,12 +58,16 @@ public class DecorClass implements GeneratedClass {
         result.addSuperinterface(getDecoratedTypeName());
 
         // Add delegate field and constructor
-        result.addField(getDecoratedTypeName(), "decorated", Modifier.PRIVATE, Modifier.FINAL);
+        final FieldSpec decorated = FieldSpec.builder(getDecoratedTypeName(),
+                                                      DECORATED_FIELD_NAME,
+                                                      Modifier.PRIVATE,
+                                                      Modifier.FINAL).build();
+        result.addField(decorated);
         result.addMethod(createConstructor());
 
         for (Element element : superType.getEnclosedElements()) {
             if (element.getKind() == ElementKind.METHOD) {
-                MethodSpec method = createOverridingMethod((ExecutableElement)element).build();
+                MethodSpec method = createOverridingMethod((ExecutableElement)element, decorated).build();
                 result.addMethod(method);
             }
         }
@@ -73,22 +79,38 @@ public class DecorClass implements GeneratedClass {
         return TypeName.get(superType.asType());
     }
 
-    private MethodSpec.Builder createOverridingMethod(ExecutableElement element) {
+    /**
+     * Code may be sub-optimal.
+     */
+    private MethodSpec.Builder createOverridingMethod(ExecutableElement element, FieldSpec decorated) {
         final MethodSpec.Builder result = MethodSpec.overriding(element);
-        if (element.getReturnType().getKind() != TypeKind.VOID) {
-            //            result.addStatement("return $L", literal);
+        String parameters = "";
+        boolean firstParameter = true;
+        for (ParameterSpec parameter : result.build().parameters) {
+            parameters += parameter.name;
+            if (!firstParameter) parameters += ", ";
+            else firstParameter = false;
         }
+        String format = "$N.$N(" + parameters + ")";
+        if (element.getReturnType().getKind() != TypeKind.VOID) {
+            format = "return " + format;
+        }
+        result.addStatement(format, decorated, result.build());
+
         return result;
     }
 
     private MethodSpec createConstructor() {
-        final ParameterSpec.Builder param = ParameterSpec.builder(getDecoratedTypeName(), "decorated", Modifier.FINAL);
+        final String parameterName = "decorated";
+        final ParameterSpec.Builder param = ParameterSpec.builder(getDecoratedTypeName(),
+                                                                  parameterName,
+                                                                  Modifier.FINAL);
         param.addAnnotation(NonNull.class);
 
         final MethodSpec.Builder result = MethodSpec.constructorBuilder();
         result.addModifiers(Modifier.PUBLIC);
         result.addParameter(param.build());
-        result.addStatement("this.decorated = decorated");
+        result.addStatement("this." + DECORATED_FIELD_NAME + " = " + parameterName);
         return result.build();
     }
 
