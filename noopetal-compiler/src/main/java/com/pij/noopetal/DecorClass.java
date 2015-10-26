@@ -15,7 +15,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 
-import static com.pij.noopetal.GeneratedClassUtil.addAccessModifier;
+import static com.pij.noopetal.GeneratedClassUtil.applyAccessModifier;
 import static com.pij.noopetal.GeneratedClassUtil.createGeneratedAnnotation;
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -51,7 +51,7 @@ public class DecorClass implements GeneratedClass {
     @Override
     public TypeSpec getTypeSpec() {
         TypeSpec.Builder result = TypeSpec.classBuilder(className);
-        addAccessModifier(result, superType);
+        applyAccessModifier(superType, result);
         result.addJavadoc(createGeneratedAnnotation(processorClass).toString());
         result.addSuperinterface(getDecoratedTypeName());
 

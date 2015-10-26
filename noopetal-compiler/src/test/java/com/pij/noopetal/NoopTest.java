@@ -40,28 +40,27 @@ public class NoopTest {
                                                             "@com.pij.noopetal.Noop",
                                                             "public interface Test {",
                                                             "}"));
-        JavaFileObject expected = forSourceLines("test/TestNoop",
+        JavaFileObject expected = forSourceLines("test/NoopTest",
                                                  "package test;",
                                                  "",
                                                  "/**",
                                                  " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
-                                                 "public class TestNoop implements Test {",
+                                                 "public class NoopTest implements Test {",
                                                  "}");
         assertGeneration(source, expected);
     }
 
     @Test
     public void test_defaultInterface_CompilesAndGeneratesDefaultClass() {
-        JavaFileObject source = forSourceLines("test.Test",
-                                               "package test;", "@com.pij.noopetal.Noop",
+        JavaFileObject source = forSourceLines("test.Test", "package test;", "@com.pij.noopetal.Noop",
                                                "interface Test {",
                                                "}");
-        JavaFileObject expected = forSourceLines("test/TestNoop",
+        JavaFileObject expected = forSourceLines("test/NoopTest",
                                                  "package test;",
                                                  "",
                                                  "/**",
                                                  " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
-                                                 "class TestNoop implements Test {",
+                                                 "class NoopTest implements Test {",
                                                  "}");
         assertGeneration(source, expected);
     }
@@ -69,17 +68,16 @@ public class NoopTest {
     @Test
     public void test_innerPublicInterface_CompilesAndGenerateDollarClass() {
         JavaFileObject source = forSourceLines("test.Container",
-                                               "package test;",
-                                               "public class Container {", "@com.pij.noopetal.Noop",
+                                               "package test;", "public class Container {", "@com.pij.noopetal.Noop",
                                                "public interface Test {",
                                                "}",
                                                "}");
-        JavaFileObject expected = forSourceLines("test/Container$TestNoop",
+        JavaFileObject expected = forSourceLines("test/Container$NoopTest",
                                                  "package test;",
                                                  "",
                                                  "/**",
                                                  " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
-                                                 "public class Container$TestNoop implements Container.Test {",
+                                                 "public class Container$NoopTest implements Container.Test {",
                                                  "}");
         assertGeneration(source, expected);
     }
@@ -87,8 +85,7 @@ public class NoopTest {
     @Test
     public void test_privateInnerPublicInterface_generatesDollarClassButDoesNotCompile() {
         JavaFileObject source = forSourceLines("test.Container",
-                                               "package test;",
-                                               "public class Container {", "@com.pij.noopetal.Noop",
+                                               "package test;", "public class Container {", "@com.pij.noopetal.Noop",
                                                "private interface Test {",
                                                "}",
                                                "}");

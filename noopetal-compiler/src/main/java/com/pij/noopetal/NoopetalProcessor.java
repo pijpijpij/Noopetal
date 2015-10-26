@@ -29,8 +29,8 @@ import static javax.tools.Diagnostic.Kind.ERROR;
 @AutoService(Processor.class)
 public final class NoopetalProcessor extends AbstractProcessor {
 
-    private static final String NOOP_CLASS_SUFFIX = "Noop";
-    private static final String DECOR_CLASS_SUFFIX = "Decorating";
+    private static final String NOOP_CLASS_PREFIX = "Noop";
+    private static final String DECOR_CLASS_PREFIX = "Decorating";
 
     private Elements elementUtils;
     private Types typeUtils;
@@ -219,7 +219,7 @@ public final class NoopetalProcessor extends AbstractProcessor {
      */
     private GeneratedClass createNoopClass(TypeElement element) {
         String classPackage = getPackageName(element);
-        String className = getClassName(element, classPackage) + NOOP_CLASS_SUFFIX;
+        String className = NOOP_CLASS_PREFIX + getClassName(element, classPackage);
 
         return new NoopClass(classPackage, className, element, this);
     }
@@ -231,7 +231,7 @@ public final class NoopetalProcessor extends AbstractProcessor {
      */
     private GeneratedClass createDecorClass(TypeElement element) {
         String classPackage = getPackageName(element);
-        String className = getClassName(element, classPackage) + DECOR_CLASS_SUFFIX;
+        String className = DECOR_CLASS_PREFIX + getClassName(element, classPackage);
 
         return new DecorClass(classPackage, className, element, this);
     }

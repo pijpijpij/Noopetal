@@ -12,7 +12,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
-import static com.pij.noopetal.GeneratedClassUtil.addAccessModifier;
+import static com.pij.noopetal.GeneratedClassUtil.applyAccessModifier;
 import static com.pij.noopetal.GeneratedClassUtil.createGeneratedAnnotation;
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -33,7 +33,7 @@ final class NoopClass implements GeneratedClass {
 
     private static MethodSpec.Builder createOverridingMethod(ExecutableElement element) {
         final MethodSpec.Builder result = MethodSpec.overriding(element);
-        final String literal = GeneratedClassUtil.calculateDefaultLiteral(element.getReturnType());
+        final String literal = GeneratedClassUtil.defaultReturnLiteral(element.getReturnType());
         if (literal != null) result.addStatement("return $L", literal);
         return result;
     }
@@ -55,7 +55,7 @@ final class NoopClass implements GeneratedClass {
     @NonNull
     public TypeSpec getTypeSpec() {
         TypeSpec.Builder result = TypeSpec.classBuilder(className);
-        addAccessModifier(result, superType);
+        applyAccessModifier(superType, result);
         result.addJavadoc(createGeneratedAnnotation(processorClass).toString());
         result.addSuperinterface(TypeName.get(superType.asType()));
 

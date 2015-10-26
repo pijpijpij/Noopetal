@@ -25,7 +25,7 @@ public class GeneratedClassUtil {
      * @return the access modifier of the <code>typeElement</code>.
      */
     @Nullable
-    public static Modifier extractAccessModifier(TypeElement typeElement) {
+    public static Modifier extractAccessModifier(@NonNull TypeElement typeElement) {
         final Set<Modifier> modifiers = typeElement.getModifiers();
         for (Modifier modifier : modifiers) {
             switch (modifier) {
@@ -38,13 +38,13 @@ public class GeneratedClassUtil {
         return null;
     }
 
-    public static void addAccessModifier(TypeSpec.Builder target, TypeElement source) {
+    public static void applyAccessModifier(@NonNull TypeElement source, @NonNull TypeSpec.Builder target) {
         final Modifier modifier = extractAccessModifier(source);
         if (modifier != null) target.addModifiers(modifier);
     }
 
     @NonNull
-    public static AnnotationSpec createGeneratedAnnotation(Class<? extends Processor> processorClass) {
+    public static AnnotationSpec createGeneratedAnnotation(@NonNull Class<? extends Processor> processorClass) {
         return AnnotationSpec.builder(Generated.class)
                              .addMember("value",
                                         "\"$N\"",
@@ -52,7 +52,7 @@ public class GeneratedClassUtil {
                              .build();
     }
 
-    public static String calculateDefaultLiteral(TypeMirror returnType) {
+    public static String defaultReturnLiteral(@NonNull TypeMirror returnType) {
         final TypeKind kind = returnType.getKind();
         switch (kind) {
             case VOID:
