@@ -6,7 +6,7 @@ Noop et Al
 Generation of standard classes from interfaces:
 
  * `@Noop` generates a class that does nothing and returned default values (0 or <code>null</code>). Classes of that kind are 
-   often used as the base for classes that only handle certain event/method calls of th eparent interface.
+   often used as base for classes that handle only some event/method calls of the annotated interface.
  * `@Decor` generates a class that passes all calls to another implementation of the interface. Really useful to
    create decorators.
 
@@ -14,7 +14,7 @@ Generation of standard classes from interfaces:
 package com.company.example;
 
 @Noop
-interface ExanpleInterface {
+interface ExampleInterface {
 
   void setProperty(String value);
   
@@ -27,11 +27,12 @@ The generated code will look like this:
 ```java
 package com.company.example;
 
-@Generated
-  public class ExampleInterfaceNoop {
+/**
+ * @Generated ..
+ */
+public class NoopExampleInterface {
   
   void setProperty(String ignored) { }
-  }
   
   String calculateSomething(String ignore1, int ignored2) {
     return null;
@@ -39,6 +40,30 @@ package com.company.example;
 
 }
 ```
+```java
+package com.company.example;
+
+/**
+ * @Generated ..
+ */
+public class DecoratingExampleInterface {
+  private final ExampleInterface decorated;
+  
+  public DecoratingExampleInterface(@NonNull ExampleInterface decorated) {
+    this.decorated = decorated;
+  }
+  
+  void setProperty(String value) {
+    decorated.setProperty(value);
+  }
+  
+  String calculateSomething(String param, int thistoo) {
+    return decorated.calculateSomething(param, thistoo);
+  }
+
+}
+```
+
 
 Download
 --------
