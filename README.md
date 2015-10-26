@@ -70,7 +70,7 @@ Generate a decorator for non-final classes with non-final public methods.
 Only source download available, from this site!
 
 ## Usage
-To use, download the source for the version of interest build it and install it in your local Maven repository.
+To use, download the source for the version of interest, build it and install it in your local Maven repository.
 Then, in a Maven project:
 ```xml
 <dependency>
@@ -79,7 +79,7 @@ Then, in a Maven project:
   <version>0.1.0</version>
 </dependency>
 ```
-or Gradle:
+or Gradle for a Java project:
 ```groovy
 compile 'com.pij:com.pij.noopetal:0.1.0'
 ```
@@ -89,12 +89,12 @@ For the SNAPSHOT version:
 <dependency>
   <groupId>com.pij</groupId>
   <artifactId>com.pij.noopetal</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.1.0</version>
 </dependency>
 <dependency>
   <groupId>com.pij</groupId>
   <artifactId>com.pij.noopetal-compiler</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <optional>true</optional>
 </dependency>
 ```
@@ -109,8 +109,8 @@ buildscript {
 apply plugin: 'com.neenbedankt.android-apt'
 
 dependencies {
-  compile 'com.pij:com.pij.noopetal:0.2.0-SNAPSHOT'
-  apt 'com.pij:com.pij.noopetal-compiler:0.2.0-SNAPSHOT'
+  compile 'com.pij:com.pij.noopetal:0.1.0'
+  apt 'com.pij:com.pij.noopetal-compiler:0.1.0'
 }
 ```
 
