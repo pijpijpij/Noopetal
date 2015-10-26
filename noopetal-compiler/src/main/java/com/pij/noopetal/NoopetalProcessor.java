@@ -108,7 +108,9 @@ public final class NoopetalProcessor extends AbstractProcessor {
     }
 
     private void createFile(GeneratedClass source) {
-        final JavaFile file = JavaFile.builder(source.getClassPackage(), source.getTypeSpec()).build();
+        final JavaFile file = JavaFile.builder(source.getClassPackage(), source.getTypeSpec())
+                                      .skipJavaLangImports(true)
+                                      .build();
         try {
             file.writeTo(filer);
         } catch (IOException e) {

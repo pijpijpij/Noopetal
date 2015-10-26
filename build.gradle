@@ -30,6 +30,7 @@ ext.deps = [
 
         // Miscellaneous
         commonsLang       : 'org.apache.commons:commons-lang3:3.4',
+        commonsColl: 'org.apache.commons:commons-collections4:4.0',
 
         // Test dependencies
         junit             : 'junit:junit:4.12',

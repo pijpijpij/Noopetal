@@ -8,6 +8,7 @@ dependencies {
     compile deps.javapoet
     compile deps.supportAnnotations
     compile deps.commonsLang
+    compile deps.commonsColl
 
     testCompile deps.junit
     testCompile deps.truth

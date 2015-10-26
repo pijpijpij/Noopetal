@@ -10,12 +10,23 @@ import static com.google.common.truth.Truth.assertAbout;
 import static com.google.testing.compile.JavaFileObjects.forSourceLines;
 import static com.google.testing.compile.JavaFileObjects.forSourceString;
 import static com.google.testing.compile.JavaSourceSubjectFactory.javaSource;
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.ArrayUtils.addAll;
 
 /**
  * Integration test for the {@link Noop} annotation
  * @author Pierrejean on 24/10/2015.
  */
 public class NoopTest {
+
+    private static final String[] STANDARD_SOURCE_HEADER = {
+            "package test;", "@com.pij.noopetal.Noop", "public interface Test {"
+    };
+
+    private static final String[] STANDARD_EXPECTED_HEADER = {
+            "package test;", "", "/**", " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+            "public class NoopTest implements Test {"
+    };
 
     private static void assertGeneration(JavaFileObject source, JavaFileObject expectedGeneratedSource) {
         assertAbout(javaSource()).that(source)
@@ -68,7 +79,9 @@ public class NoopTest {
     @Test
     public void test_innerPublicInterface_CompilesAndGenerateDollarClass() {
         JavaFileObject source = forSourceLines("test.Container",
-                                               "package test;", "public class Container {", "@com.pij.noopetal.Noop",
+                                               "package test;",
+                                               "public class Container {",
+                                               "@com.pij.noopetal.Noop",
                                                "public interface Test {",
                                                "}",
                                                "}");
@@ -85,7 +98,9 @@ public class NoopTest {
     @Test
     public void test_privateInnerPublicInterface_generatesDollarClassButDoesNotCompile() {
         JavaFileObject source = forSourceLines("test.Container",
-                                               "package test;", "public class Container {", "@com.pij.noopetal.Noop",
+                                               "package test;",
+                                               "public class Container {",
+                                               "@com.pij.noopetal.Noop",
                                                "private interface Test {",
                                                "}",
                                                "}");
@@ -106,6 +121,66 @@ public class NoopTest {
                                  .processedWith(new NoopetalProcessor())
                                  .failsToCompile()
                                  .withErrorContaining("@Noop must only be applied to an interface. Test isn't");
+    }
+
+    @Test
+    public void test_methodVoidWithNoArguments_CompilesAndGenerates() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               asList(addAll(STANDARD_SOURCE_HEADER, "void noArgVoidMethod();", "}")));
+        JavaFileObject expected = forSourceLines("test/NoopTest",
+                                                 asList(addAll(STANDARD_EXPECTED_HEADER,
+                                                               "@Override",
+                                                               "public void noArgVoidMethod() {",
+                                                               "}",
+                                                               "}")));
+
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_methodLongWithNoArguments_CompilesAndGeneratesZeroReturnValue() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               asList(addAll(STANDARD_SOURCE_HEADER, "long noArgMethod();", "}")));
+        JavaFileObject expected = forSourceLines("test/NoopTest",
+                                                 asList(addAll(STANDARD_EXPECTED_HEADER,
+                                                               "@Override",
+                                                               "public long noArgMethod() {",
+                                                               "return 0L;",
+                                                               "}",
+                                                               "}")));
+
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_methodIntegerWithNoArgument_CompilesAndGeneratesNullReturnValue() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               asList(addAll(STANDARD_SOURCE_HEADER, "Integer noArgMethod();", "}")));
+        JavaFileObject expected = forSourceLines("test/NoopTest",
+                                                 asList(addAll(STANDARD_EXPECTED_HEADER,
+                                                               "@Override",
+                                                               "public Integer noArgMethod() {",
+                                                               "return null;",
+                                                               "}",
+                                                               "}")));
+
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_methodWithOneArgument_CompilesAndGenerates() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               asList(addAll(STANDARD_SOURCE_HEADER,
+                                                             "void oneArgMethod(String anArg);",
+                                                             "}")));
+        JavaFileObject expected = forSourceLines("test/NoopTest",
+                                                 asList(addAll(STANDARD_EXPECTED_HEADER,
+                                                               "@Override",
+                                                               "public void oneArgMethod(String anArg) {",
+                                                               "}",
+                                                               "}")));
+
+        assertGeneration(source, expected);
     }
 
 }
