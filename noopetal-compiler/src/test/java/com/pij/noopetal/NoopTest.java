@@ -242,4 +242,48 @@ public class NoopTest {
         assertGeneration(source, expected);
     }
 
+    @Test
+    public void test_enumGenericInterface_CompilesAndGeneratesGenericNoop() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Noop", "public interface Test<T extends Enum<T>> {",
+                                               "void oneArgMethod(String anArg);",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test/NoopTest",
+                                                 "package test;",
+                                                 "",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class NoopTest<T extends Enum<T>> implements Test<T> {",
+                                                 "@Override",
+                                                 "public void oneArgMethod(String anArg) {",
+                                                 "}",
+                                                 "}");
+
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_enumGenericMethod_CompilesAndGeneratesGenericMethod() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Noop",
+                                               "public interface Test {",
+                                               "<T extends Enum<T>> T oneArgMethod(T anArg);",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test/NoopTest",
+                                                 "package test;",
+                                                 "",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class NoopTest implements Test {",
+                                                 "@Override",
+                                                 "public <T extends Enum<T>> T oneArgMethod(T anArg) {",
+                                                 "return null;",
+                                                 "}",
+                                                 "}");
+
+        assertGeneration(source, expected);
+    }
+
 }
