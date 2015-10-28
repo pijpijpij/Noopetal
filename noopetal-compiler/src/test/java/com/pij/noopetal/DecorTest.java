@@ -108,7 +108,7 @@ public class DecorTest {
     }
 
     @Test
-    public void test_innerPublicInterface_CompilesAndGenerateDollarClass() {
+    public void test_innerPublicInterface_CompilesAndGenerateUnderscoreClass() {
         JavaFileObject source = forSourceLines("test.Container",
                                                "package test;",
                                                "public class Container {",
@@ -116,12 +116,16 @@ public class DecorTest {
                                                "public interface Test {",
                                                "}",
                                                "}");
-        JavaFileObject expected = forSourceLines("test/Container$DecoratingTest",
+        JavaFileObject expected = forSourceLines("test/Container_DecoratingTest",
                                                  "package test;",
-                                                 "",
+                                                 "import android.support.annotation.NonNull;",
                                                  "/**",
                                                  " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
-                                                 "public class Container$DecoratingTest implements Container.Test {",
+                                                 "public class Container_DecoratingTest implements Container.Test {",
+                                                 "private final Container.Test decorated;",
+                                                 "public DecoratingTest(@NonNull final Container.Test decorated) {",
+                                                 "this.decorated = decorated;",
+                                                 "}",
                                                  "}");
         assertGeneration(source, expected);
     }

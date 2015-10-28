@@ -1,8 +1,12 @@
 package com.pij.noopetal;
 
+import android.support.annotation.NonNull;
+
 import com.google.auto.common.SuperficialValidation;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -36,9 +40,17 @@ public final class NoopetalProcessor extends AbstractProcessor {
     private Types typeUtils;
     private Filer filer;
 
-    private static String getClassName(TypeElement type, String packageName) {
+    @NonNull
+    private static String calculateGeneratedClassName(TypeElement type, String packageName, String prefix) {
         int packageLen = packageName.length() + 1;
-        return type.getQualifiedName().toString().substring(packageLen).replace('.', '$');
+        final String simpleClassName = type.getQualifiedName().toString().substring(packageLen);
+        String containingClassPrefix = StringUtils.EMPTY;
+        final int lastDot = simpleClassName.lastIndexOf('.');
+        if (lastDot >= 0) {
+            String containingClassName = simpleClassName.substring(0, lastDot);
+            containingClassPrefix = containingClassName.replace('.', '_') + "_";
+        }
+        return containingClassPrefix + prefix + simpleClassName.substring(lastDot + 1);
     }
 
     @Override
@@ -221,7 +233,7 @@ public final class NoopetalProcessor extends AbstractProcessor {
      */
     private GeneratedClass createNoopClass(TypeElement element) {
         String classPackage = getPackageName(element);
-        String className = NOOP_CLASS_PREFIX + getClassName(element, classPackage);
+        String className = calculateGeneratedClassName(element, classPackage, NOOP_CLASS_PREFIX);
 
         return new NoopClass(classPackage, className, element, this);
     }
@@ -233,7 +245,7 @@ public final class NoopetalProcessor extends AbstractProcessor {
      */
     private GeneratedClass createDecorClass(TypeElement element) {
         String classPackage = getPackageName(element);
-        String className = DECOR_CLASS_PREFIX + getClassName(element, classPackage);
+        String className = calculateGeneratedClassName(element, classPackage, DECOR_CLASS_PREFIX);
 
         return new DecorClass(classPackage, className, element, this);
     }

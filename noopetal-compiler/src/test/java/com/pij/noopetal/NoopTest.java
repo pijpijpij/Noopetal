@@ -77,7 +77,7 @@ public class NoopTest {
     }
 
     @Test
-    public void test_innerPublicInterface_CompilesAndGenerateDollarClass() {
+    public void test_innerPublicInterface_CompilesAndGenerateUnderscoreClass() {
         JavaFileObject source = forSourceLines("test.Container",
                                                "package test;",
                                                "public class Container {",
@@ -85,12 +85,12 @@ public class NoopTest {
                                                "public interface Test {",
                                                "}",
                                                "}");
-        JavaFileObject expected = forSourceLines("test/Container$NoopTest",
+        JavaFileObject expected = forSourceLines("test/ContainerNoopTest",
                                                  "package test;",
                                                  "",
                                                  "/**",
                                                  " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
-                                                 "public class Container$NoopTest implements Container.Test {",
+                                                 "public class Container_NoopTest implements Container.Test {",
                                                  "}");
         assertGeneration(source, expected);
     }
