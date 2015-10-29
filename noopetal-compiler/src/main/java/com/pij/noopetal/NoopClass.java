@@ -21,14 +21,14 @@ final class NoopClass implements GeneratedClass {
     private final String classPackage;
     private final String className;
     private final Class<? extends Processor> processorClass;
-    private final TypeElement superType;
+    private final TypeElement sourceType;
 
-    public NoopClass(@NonNull String classPackage, @NonNull String className, @NonNull TypeElement superType,
+    public NoopClass(@NonNull String classPackage, @NonNull String className, @NonNull TypeElement sourceType,
                      @NonNull Processor processor) {
         this.classPackage = notNull(classPackage);
         this.className = notNull(className);
         this.processorClass = notNull(processor).getClass();
-        this.superType = notNull(superType);
+        this.sourceType = notNull(sourceType);
     }
 
     private static MethodSpec.Builder createOverridingMethod(ExecutableElement element) {
@@ -39,8 +39,13 @@ final class NoopClass implements GeneratedClass {
     }
 
     @Override
-    public TypeElement getSuperType() {
-        return superType;
+    public TypeElement getSourceType() {
+        return sourceType;
+    }
+
+    @Override
+    public String getClassName() {
+        return className;
     }
 
     @Override
@@ -49,18 +54,18 @@ final class NoopClass implements GeneratedClass {
     }
 
     /**
-     * The access modifier is that of the superType.
+     * The access modifier is that of the sourceType.
      */
     @Override
     @NonNull
     public TypeSpec getTypeSpec() {
         TypeSpec.Builder result = TypeSpec.classBuilder(className);
-        applyAccessModifier(superType, result);
-        GeneratedClassUtil.applyTypeVariables(superType, result);
+        applyAccessModifier(sourceType, result);
+        GeneratedClassUtil.applyTypeVariables(sourceType, result);
         result.addJavadoc(createGeneratedAnnotation(processorClass).toString());
-        result.addSuperinterface(TypeName.get(superType.asType()));
+        result.addSuperinterface(TypeName.get(sourceType.asType()));
 
-        for (Element element : superType.getEnclosedElements()) {
+        for (Element element : sourceType.getEnclosedElements()) {
             if (element.getKind() == ElementKind.METHOD) {
                 MethodSpec method = createOverridingMethod((ExecutableElement)element).build();
                 result.addMethod(method);

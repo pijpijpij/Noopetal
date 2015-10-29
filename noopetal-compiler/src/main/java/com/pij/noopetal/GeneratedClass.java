@@ -11,7 +11,9 @@ import javax.lang.model.element.TypeElement;
  */
 public interface GeneratedClass {
 
-    TypeElement getSuperType();
+    TypeElement getSourceType();
+
+    String getClassName();
 
     String getClassPackage();
 

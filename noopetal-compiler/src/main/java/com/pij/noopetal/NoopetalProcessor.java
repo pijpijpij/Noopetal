@@ -126,8 +126,9 @@ public final class NoopetalProcessor extends AbstractProcessor {
         try {
             file.writeTo(filer);
         } catch (IOException e) {
-            TypeElement typeElement = source.getSuperType();
-            error(typeElement, "Unable to write Noop implementation of type %s: %s", typeElement, e.getMessage());
+            final TypeElement sourceType = source.getSourceType();
+            final String className = source.getClassName();
+            error(sourceType, "Unable to write file %s of type %s: %s", className, sourceType, e.getMessage());
         }
     }
 

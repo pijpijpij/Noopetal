@@ -29,19 +29,25 @@ public class DecorClass implements GeneratedClass {
     private final String classPackage;
     private final String className;
     private final Class<? extends Processor> processorClass;
-    private final TypeElement superType;
+    private final TypeElement sourceType;
 
-    public DecorClass(@NonNull String classPackage, @NonNull String className, @NonNull TypeElement superType,
+    public DecorClass(@NonNull String classPackage, @NonNull String className, @NonNull TypeElement sourceType,
                       @NonNull Processor processor) {
         this.classPackage = notNull(classPackage);
         this.className = notNull(className);
         this.processorClass = notNull(processor).getClass();
-        this.superType = notNull(superType);
+        this.sourceType = notNull(sourceType);
     }
 
     @Override
-    public TypeElement getSuperType() {
-        return superType;
+    public TypeElement getSourceType() {
+        return sourceType;
+    }
+
+
+    @Override
+    public String getClassName() {
+        return className;
     }
 
     @Override
@@ -52,9 +58,9 @@ public class DecorClass implements GeneratedClass {
     @NonNull
     @Override
     public TypeSpec getTypeSpec() {
-        TypeSpec.Builder result = TypeSpec.classBuilder(className);
-        applyAccessModifier(superType, result);
-        GeneratedClassUtil.applyTypeVariables(superType, result);
+        TypeSpec.Builder result = TypeSpec.classBuilder(getClassName());
+        applyAccessModifier(sourceType, result);
+        GeneratedClassUtil.applyTypeVariables(sourceType, result);
         result.addJavadoc(createGeneratedAnnotation(processorClass).toString());
         result.addSuperinterface(getDecoratedTypeName());
 
@@ -66,7 +72,7 @@ public class DecorClass implements GeneratedClass {
         result.addField(decorated);
         result.addMethod(createConstructor());
 
-        for (Element element : superType.getEnclosedElements()) {
+        for (Element element : sourceType.getEnclosedElements()) {
             if (element.getKind() == ElementKind.METHOD) {
                 MethodSpec method = createOverridingMethod((ExecutableElement)element, decorated).build();
                 result.addMethod(method);
@@ -77,7 +83,7 @@ public class DecorClass implements GeneratedClass {
     }
 
     private TypeName getDecoratedTypeName() {
-        return TypeName.get(superType.asType());
+        return TypeName.get(sourceType.asType());
     }
 
     /**
