@@ -6,8 +6,6 @@ import com.google.auto.common.SuperficialValidation;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -17,13 +15,13 @@ import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
@@ -35,23 +33,6 @@ public final class NoopetalProcessor extends AbstractProcessor {
 
     private static final String NOOP_CLASS_PREFIX = "Noop";
     private static final String DECOR_CLASS_PREFIX = "Decorating";
-
-    private Elements elementUtils;
-    private Types typeUtils;
-    private Filer filer;
-
-    @NonNull
-    private static String calculateGeneratedClassName(TypeElement type, String packageName, String prefix) {
-        int packageLen = packageName.length() + 1;
-        final String simpleClassName = type.getQualifiedName().toString().substring(packageLen);
-        String containingClassPrefix = StringUtils.EMPTY;
-        final int lastDot = simpleClassName.lastIndexOf('.');
-        if (lastDot >= 0) {
-            String containingClassName = simpleClassName.substring(0, lastDot);
-            containingClassPrefix = containingClassName.replace('.', '_') + "_";
-        }
-        return containingClassPrefix + prefix + simpleClassName.substring(lastDot + 1);
-    }
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
@@ -69,21 +50,16 @@ public final class NoopetalProcessor extends AbstractProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment env) {
         super.init(env);
-
-        elementUtils = env.getElementUtils();
-        typeUtils = env.getTypeUtils();
-        filer = env.getFiler();
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
         if (env.processingOver() || env.errorRaised()) return false;
 
-        for (TypeElement annotationElement : annotations) {
-            final TypeMirror annotation = annotationElement.asType();
-            if (typeUtils.isSameType(annotation, getNoopTypeMirror())) {
+        for (TypeElement annotation : annotations) {
+            if (isSame(annotation, Noop.class)) {
                 processNoop(env);
-            } else if (typeUtils.isSameType(annotation, getDecorTypeMirror())) {
+            } else if (isSame(annotation, Decor.class)) {
                 processDecor(env);
             }
         }
@@ -91,14 +67,20 @@ public final class NoopetalProcessor extends AbstractProcessor {
         return true;
     }
 
-    private TypeMirror getDecorTypeMirror() {
-        final TypeElement decorTypeElement = elementUtils.getTypeElement(Decor.class.getCanonicalName());
-        return decorTypeElement.asType();
+    private Elements getElementUtils() {
+        return processingEnv.getElementUtils();
     }
 
-    private TypeMirror getNoopTypeMirror() {
-        final TypeElement noopTypeElement = elementUtils.getTypeElement(Noop.class.getCanonicalName());
-        return noopTypeElement.asType();
+    private Types getTypeUtils() {
+        return processingEnv.getTypeUtils();
+    }
+
+    private Filer getFiler() {
+        return processingEnv.getFiler();
+    }
+
+    private Messager getMessager() {
+        return processingEnv.getMessager();
     }
 
     private void processNoop(RoundEnvironment env) {
@@ -124,7 +106,7 @@ public final class NoopetalProcessor extends AbstractProcessor {
                                       .skipJavaLangImports(true)
                                       .build();
         try {
-            file.writeTo(filer);
+            file.writeTo(getFiler());
         } catch (IOException e) {
             final TypeElement sourceType = source.getSourceType();
             final String className = source.getClassName();
@@ -133,7 +115,7 @@ public final class NoopetalProcessor extends AbstractProcessor {
     }
 
     private Set<GeneratedClass> findAndParseNoopTargets(RoundEnvironment env) {
-        Set<GeneratedClass> targetClasses = new LinkedHashSet<>();
+        Set<GeneratedClass> result = new LinkedHashSet<>();
 
         // Process each @Noop element.
         for (Element element : env.getElementsAnnotatedWith(Noop.class)) {
@@ -141,18 +123,18 @@ public final class NoopetalProcessor extends AbstractProcessor {
             // has it in Butterknife.
             if (SuperficialValidation.validateElement(element) && validateNoopTarget(element)) {
                 try {
-                    parseNoop(element, targetClasses);
+                    parseNoop(element, result);
                 } catch (Exception e) {
                     logParsingError(element, Noop.class, e);
                 }
             }
         }
 
-        return targetClasses;
+        return result;
     }
 
     private Set<GeneratedClass> findAndParseDecorTargets(RoundEnvironment env) {
-        Set<GeneratedClass> targetClasses = new LinkedHashSet<>();
+        Set<GeneratedClass> result = new LinkedHashSet<>();
 
         // Process each @Decor element.
         for (Element element : env.getElementsAnnotatedWith(Decor.class)) {
@@ -160,14 +142,14 @@ public final class NoopetalProcessor extends AbstractProcessor {
             // has it in Butterknife.
             if (SuperficialValidation.validateElement(element) && validateDecorTarget(element)) {
                 try {
-                    parseDecor(element, targetClasses);
+                    parseDecor(element, result);
                 } catch (Exception e) {
                     logParsingError(element, Decor.class, e);
                 }
             }
         }
 
-        return targetClasses;
+        return result;
     }
 
     /**
@@ -209,7 +191,7 @@ public final class NoopetalProcessor extends AbstractProcessor {
      * This is where information about the annotation should be/is gathered.
      */
     private void parseNoop(Element element, Set<GeneratedClass> targetClasses) {
-        // Nothin much to gather: there's no option/ value to gather...
+        // Nothing much to gather: there's no option/ value to gather...
         TypeElement typeElement = (TypeElement)element;
 
         GeneratedClass result = createNoopClass(typeElement);
@@ -220,7 +202,7 @@ public final class NoopetalProcessor extends AbstractProcessor {
      * This is where information about the annotation should be/is gathered.
      */
     private void parseDecor(Element element, Set<GeneratedClass> targetClasses) {
-        // Nothin much to gather: there's no option/ value to gather...
+        // Nothing much to gather: there's no option/ value to gather...
         TypeElement typeElement = (TypeElement)element;
 
         GeneratedClass result = createDecorClass(typeElement);
@@ -233,8 +215,8 @@ public final class NoopetalProcessor extends AbstractProcessor {
      * @return a representation of the generated class
      */
     private GeneratedClass createNoopClass(TypeElement element) {
-        String classPackage = getPackageName(element);
-        String className = calculateGeneratedClassName(element, classPackage, NOOP_CLASS_PREFIX);
+        String classPackage = extractPackageName(element);
+        String className = GeneratedClassUtil.calculateGeneratedClassName(element, classPackage, NOOP_CLASS_PREFIX);
 
         return new NoopClass(classPackage, className, element, this);
     }
@@ -245,8 +227,8 @@ public final class NoopetalProcessor extends AbstractProcessor {
      * @return a representation of the generated class
      */
     private GeneratedClass createDecorClass(TypeElement element) {
-        String classPackage = getPackageName(element);
-        String className = calculateGeneratedClassName(element, classPackage, DECOR_CLASS_PREFIX);
+        String classPackage = extractPackageName(element);
+        String className = GeneratedClassUtil.calculateGeneratedClassName(element, classPackage, DECOR_CLASS_PREFIX);
 
         return new DecorClass(classPackage, className, element, this);
     }
@@ -255,11 +237,17 @@ public final class NoopetalProcessor extends AbstractProcessor {
         if (args.length > 0) {
             message = String.format(message, args);
         }
-        processingEnv.getMessager().printMessage(ERROR, message, element);
+        getMessager().printMessage(ERROR, message, element);
     }
 
-    private String getPackageName(TypeElement type) {
-        return elementUtils.getPackageOf(type).getQualifiedName().toString();
+    @NonNull
+    private String extractPackageName(TypeElement type) {
+        return getElementUtils().getPackageOf(type).getQualifiedName().toString();
+    }
+
+    private boolean isSame(TypeElement element, Class<?> classe) {
+        return getTypeUtils().isSameType(element.asType(),
+                                         getElementUtils().getTypeElement(classe.getCanonicalName()).asType());
     }
 
 }

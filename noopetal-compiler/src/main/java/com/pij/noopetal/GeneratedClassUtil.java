@@ -7,6 +7,8 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 import java.util.Set;
 
@@ -83,5 +85,18 @@ public class GeneratedClassUtil {
             TypeVariableName targetParameter = TypeVariableName.get(sourceParameter);
             target.addTypeVariable(targetParameter);
         }
+    }
+
+    @NonNull
+    public static String calculateGeneratedClassName(TypeElement type, String packageName, String prefix) {
+        int packageLen = packageName.length() + 1;
+        final String simpleClassName = type.getQualifiedName().toString().substring(packageLen);
+        String containingClassPrefix = StringUtils.EMPTY;
+        final int lastDot = simpleClassName.lastIndexOf('.');
+        if (lastDot >= 0) {
+            String containingClassName = simpleClassName.substring(0, lastDot);
+            containingClassPrefix = containingClassName.replace('.', '_') + "_";
+        }
+        return containingClassPrefix + prefix + simpleClassName.substring(lastDot + 1);
     }
 }
