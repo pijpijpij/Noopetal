@@ -1,10 +1,10 @@
 package com.pij.noopetal;
 
-import android.support.annotation.NonNull;
-
 import com.google.auto.common.SuperficialValidation;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,10 +21,12 @@ import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
+import static com.pij.noopetal.GeneratedClassUtil.extractPackageAndClassName;
 import static javax.lang.model.element.ElementKind.INTERFACE;
 import static javax.tools.Diagnostic.Kind.ERROR;
 
@@ -210,15 +212,24 @@ public final class NoopetalProcessor extends AbstractProcessor {
     }
 
     /**
-     * Assumes the element is valid.
-     * @param element assumed valid
-     * @return a representation of the generated class
+     * Assumes the element is valid. It uses the value specified in the annotation, if it has a package. Otherwise uses
+     * the element's package.
+     * @param element annotated interface, assumed valid
+     * @return a representation of the generated class.
      */
     private GeneratedClass createNoopClass(TypeElement element) {
-        String classPackage = extractPackageName(element);
-        String className = GeneratedClassUtil.calculateGeneratedClassName(element, classPackage, NOOP_CLASS_PREFIX);
-
-        return new NoopClass(classPackage, className, element, this);
+        String specifiedClass = element.getAnnotation(Noop.class).value();
+        Pair<String, String> packageAndClassName = extractPackageAndClassName(specifiedClass);
+        final PackageElement elementPackage = getElementUtils().getPackageOf(element);
+        String packageName = packageAndClassName.getLeft();
+        if (packageName == null) {
+            packageName = elementPackage.getQualifiedName().toString();
+        }
+        String className = packageAndClassName.getRight();
+        if (className == null) {
+            className = GeneratedClassUtil.calculateGeneratedClassName(element, elementPackage, NOOP_CLASS_PREFIX);
+        }
+        return new NoopClass(packageName, className, element, this);
     }
 
     /**
@@ -226,11 +237,12 @@ public final class NoopetalProcessor extends AbstractProcessor {
      * @param element assumed valid
      * @return a representation of the generated class
      */
-    private GeneratedClass createDecorClass(TypeElement element) {
-        String classPackage = extractPackageName(element);
-        String className = GeneratedClassUtil.calculateGeneratedClassName(element, classPackage, DECOR_CLASS_PREFIX);
 
-        return new DecorClass(classPackage, className, element, this);
+    private GeneratedClass createDecorClass(TypeElement element) {
+        final PackageElement elementPackage = getElementUtils().getPackageOf(element);
+        String className = GeneratedClassUtil.calculateGeneratedClassName(element, elementPackage, DECOR_CLASS_PREFIX);
+
+        return new DecorClass(elementPackage.getQualifiedName().toString(), className, element, this);
     }
 
     private void error(Element element, String message, Object... args) {
@@ -238,11 +250,6 @@ public final class NoopetalProcessor extends AbstractProcessor {
             message = String.format(message, args);
         }
         getMessager().printMessage(ERROR, message, element);
-    }
-
-    @NonNull
-    private String extractPackageName(TypeElement type) {
-        return getElementUtils().getPackageOf(type).getQualifiedName().toString();
     }
 
     private boolean isSame(TypeElement element, Class<?> classe) {

@@ -51,7 +51,7 @@ public class NoopTest {
                                                             "@com.pij.noopetal.Noop",
                                                             "public interface Test {",
                                                             "}"));
-        JavaFileObject expected = forSourceLines("test/NoopTest",
+        JavaFileObject expected = forSourceLines("test.NoopTest",
                                                  "package test;",
                                                  "",
                                                  "/**",
@@ -66,7 +66,7 @@ public class NoopTest {
         JavaFileObject source = forSourceLines("test.Test", "package test;", "@com.pij.noopetal.Noop",
                                                "interface Test {",
                                                "}");
-        JavaFileObject expected = forSourceLines("test/NoopTest",
+        JavaFileObject expected = forSourceLines("test.NoopTest",
                                                  "package test;",
                                                  "",
                                                  "/**",
@@ -127,7 +127,7 @@ public class NoopTest {
     public void test_methodVoidWithNoArguments_CompilesAndGenerates() {
         JavaFileObject source = forSourceLines("test.Test",
                                                asList(addAll(STANDARD_SOURCE_HEADER, "void noArgVoidMethod();", "}")));
-        JavaFileObject expected = forSourceLines("test/NoopTest",
+        JavaFileObject expected = forSourceLines("test.NoopTest",
                                                  asList(addAll(STANDARD_EXPECTED_HEADER,
                                                                "@Override",
                                                                "public void noArgVoidMethod() {",
@@ -141,7 +141,7 @@ public class NoopTest {
     public void test_methodLongWithNoArguments_CompilesAndGeneratesZeroReturnValue() {
         JavaFileObject source = forSourceLines("test.Test",
                                                asList(addAll(STANDARD_SOURCE_HEADER, "long noArgMethod();", "}")));
-        JavaFileObject expected = forSourceLines("test/NoopTest",
+        JavaFileObject expected = forSourceLines("test.NoopTest",
                                                  asList(addAll(STANDARD_EXPECTED_HEADER,
                                                                "@Override",
                                                                "public long noArgMethod() {",
@@ -156,7 +156,7 @@ public class NoopTest {
     public void test_methodIntegerWithNoArgument_CompilesAndGeneratesNullReturnValue() {
         JavaFileObject source = forSourceLines("test.Test",
                                                asList(addAll(STANDARD_SOURCE_HEADER, "Integer noArgMethod();", "}")));
-        JavaFileObject expected = forSourceLines("test/NoopTest",
+        JavaFileObject expected = forSourceLines("test.NoopTest",
                                                  asList(addAll(STANDARD_EXPECTED_HEADER,
                                                                "@Override",
                                                                "public Integer noArgMethod() {",
@@ -173,7 +173,7 @@ public class NoopTest {
                                                asList(addAll(STANDARD_SOURCE_HEADER,
                                                              "void oneArgMethod(String anArg);",
                                                              "}")));
-        JavaFileObject expected = forSourceLines("test/NoopTest",
+        JavaFileObject expected = forSourceLines("test.NoopTest",
                                                  asList(addAll(STANDARD_EXPECTED_HEADER,
                                                                "@Override",
                                                                "public void oneArgMethod(String anArg) {",
@@ -189,7 +189,7 @@ public class NoopTest {
                                                asList(addAll(STANDARD_SOURCE_HEADER,
                                                              "void oneArgMethod(String... anArg);",
                                                              "}")));
-        JavaFileObject expected = forSourceLines("test/NoopTest",
+        JavaFileObject expected = forSourceLines("test.NoopTest",
                                                  asList(addAll(STANDARD_EXPECTED_HEADER,
                                                                "@Override",
                                                                "public void oneArgMethod(String... anArg) {",
@@ -205,7 +205,7 @@ public class NoopTest {
                                                asList(addAll(STANDARD_SOURCE_HEADER,
                                                              "void oneArgMethod(java.util.List<String> anArg);",
                                                              "}")));
-        JavaFileObject expected = forSourceLines("test/NoopTest",
+        JavaFileObject expected = forSourceLines("test.NoopTest",
                                                  "package test;",
                                                  "",
                                                  "import java.util.List;",
@@ -228,7 +228,7 @@ public class NoopTest {
                                                "public interface Test<T> {",
                                                "void oneArgMethod(String anArg);",
                                                "}");
-        JavaFileObject expected = forSourceLines("test/NoopTest",
+        JavaFileObject expected = forSourceLines("test.NoopTest",
                                                  "package test;",
                                                  "",
                                                  "/**",
@@ -246,10 +246,11 @@ public class NoopTest {
     public void test_enumGenericInterface_CompilesAndGeneratesGenericNoop() {
         JavaFileObject source = forSourceLines("test.Test",
                                                "package test;",
-                                               "@com.pij.noopetal.Noop", "public interface Test<T extends Enum<T>> {",
+                                               "@com.pij.noopetal.Noop",
+                                               "public interface Test<T extends Enum<T>> {",
                                                "void oneArgMethod(String anArg);",
                                                "}");
-        JavaFileObject expected = forSourceLines("test/NoopTest",
+        JavaFileObject expected = forSourceLines("test.NoopTest",
                                                  "package test;",
                                                  "",
                                                  "/**",
@@ -271,7 +272,7 @@ public class NoopTest {
                                                "public interface Test {",
                                                "<T extends Enum<T>> T oneArgMethod(T anArg);",
                                                "}");
-        JavaFileObject expected = forSourceLines("test/NoopTest",
+        JavaFileObject expected = forSourceLines("test.NoopTest",
                                                  "package test;",
                                                  "",
                                                  "/**",
@@ -283,6 +284,72 @@ public class NoopTest {
                                                  "}",
                                                  "}");
 
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_specifiedFullClassname_CompilesAndGeneratesSpecificiedClass() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Noop(\"another.pckg.AnotherClass\")",
+                                               "public interface Test {",
+                                               "}");
+        JavaFileObject expected = forSourceLines("another.pckg.AnotherClass",
+                                                 "package another.pckg;",
+                                                 "import test.Test;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class AnotherClass implements Test {",
+                                                 "}");
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_specifiedSimpleClassName_CompilesAndGeneratesSpecificiedClassInSamePackage() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Noop(\"AnotherClass\")",
+                                               "public interface Test {",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test.AnotherClass",
+                                                 "package test;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class AnotherClass implements Test {",
+                                                 "}");
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_specifiedDottedClassName_CompilesAndGeneratesSpecificiedClassInSamePackage() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Noop(\".AnotherClass\")",
+                                               "public interface Test {",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test.AnotherClass",
+                                                 "package test;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class AnotherClass implements Test {",
+                                                 "}");
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_specifiedPackage_CompilesAndGeneratesInSpecificiedPackageWithStandardName() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Noop(\"another.pckg.\")",
+                                               "public interface Test {",
+                                               "}");
+        JavaFileObject expected = forSourceLines("another.pckg.NoopTest",
+                                                 "package another.pckg;",
+                                                 "import test.Test;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class NoopTest implements Test {",
+                                                 "}");
         assertGeneration(source, expected);
     }
 
