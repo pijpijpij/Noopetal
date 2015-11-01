@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -26,7 +27,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
-import static com.pij.noopetal.GeneratedClassUtil.extractPackageAndClassName;
+import static com.pij.noopetal.ClassGenerationUtil.extractPackageAndClassName;
 import static javax.lang.model.element.ElementKind.INTERFACE;
 import static javax.tools.Diagnostic.Kind.ERROR;
 
@@ -59,11 +60,13 @@ public final class NoopetalProcessor extends AbstractProcessor {
         if (env.processingOver() || env.errorRaised()) return false;
 
         for (TypeElement annotation : annotations) {
+            Set<GeneratedClass> targetClasses = Collections.emptySet();
             if (isSame(annotation, Noop.class)) {
-                processNoop(env);
+                targetClasses = findAndParseNoopTargets(env);
             } else if (isSame(annotation, Decor.class)) {
-                processDecor(env);
+                targetClasses = findAndParseDecorTargets(env);
             }
+            createFiles(targetClasses);
         }
 
         return true;
@@ -83,18 +86,6 @@ public final class NoopetalProcessor extends AbstractProcessor {
 
     private Messager getMessager() {
         return processingEnv.getMessager();
-    }
-
-    private void processNoop(RoundEnvironment env) {
-        Set<GeneratedClass> targetClasses = findAndParseNoopTargets(env);
-
-        createFiles(targetClasses);
-    }
-
-    private void processDecor(RoundEnvironment env) {
-        Set<GeneratedClass> targetClasses = findAndParseDecorTargets(env);
-
-        createFiles(targetClasses);
     }
 
     private void createFiles(Set<GeneratedClass> sourceClasses) {
@@ -193,10 +184,9 @@ public final class NoopetalProcessor extends AbstractProcessor {
      * This is where information about the annotation should be/is gathered.
      */
     private void parseNoop(Element element, Set<GeneratedClass> targetClasses) {
-        // Nothing much to gather: there's no option/ value to gather...
         TypeElement typeElement = (TypeElement)element;
 
-        GeneratedClass result = createNoopClass(typeElement);
+        GeneratedClass result = createNoopClass(new EnrichedTypeElement(typeElement, getElementUtils()));
         targetClasses.add(result);
     }
 
@@ -207,7 +197,7 @@ public final class NoopetalProcessor extends AbstractProcessor {
         // Nothing much to gather: there's no option/ value to gather...
         TypeElement typeElement = (TypeElement)element;
 
-        GeneratedClass result = createDecorClass(typeElement);
+        GeneratedClass result = createDecorClass(new EnrichedTypeElement(typeElement, getElementUtils()));
         targetClasses.add(result);
     }
 
@@ -217,17 +207,17 @@ public final class NoopetalProcessor extends AbstractProcessor {
      * @param element annotated interface, assumed valid
      * @return a representation of the generated class.
      */
-    private GeneratedClass createNoopClass(TypeElement element) {
-        String specifiedClass = element.getAnnotation(Noop.class).value();
-        Pair<String, String> packageAndClassName = extractPackageAndClassName(specifiedClass);
-        final PackageElement elementPackage = getElementUtils().getPackageOf(element);
+    private GeneratedClass createNoopClass(EnrichedTypeElement element) {
+        final String specifiedClass = element.getAnnotation(Noop.class).value();
+        final Pair<String, String> packageAndClassName = extractPackageAndClassName(specifiedClass);
         String packageName = packageAndClassName.getLeft();
         if (packageName == null) {
+            final PackageElement elementPackage = element.getPackage();
             packageName = elementPackage.getQualifiedName().toString();
         }
         String className = packageAndClassName.getRight();
         if (className == null) {
-            className = GeneratedClassUtil.calculateGeneratedClassName(element, elementPackage, NOOP_CLASS_PREFIX);
+            className = element.calculateClassNameWithPrefix(NOOP_CLASS_PREFIX);
         }
         return new NoopClass(packageName, className, element, this);
     }
@@ -238,11 +228,19 @@ public final class NoopetalProcessor extends AbstractProcessor {
      * @return a representation of the generated class
      */
 
-    private GeneratedClass createDecorClass(TypeElement element) {
-        final PackageElement elementPackage = getElementUtils().getPackageOf(element);
-        String className = GeneratedClassUtil.calculateGeneratedClassName(element, elementPackage, DECOR_CLASS_PREFIX);
-
-        return new DecorClass(elementPackage.getQualifiedName().toString(), className, element, this);
+    private GeneratedClass createDecorClass(EnrichedTypeElement element) {
+        final String specifiedClass = element.getAnnotation(Decor.class).value();
+        final Pair<String, String> packageAndClassName = extractPackageAndClassName(specifiedClass);
+        String packageName = packageAndClassName.getLeft();
+        if (packageName == null) {
+            final PackageElement elementPackage = element.getPackage();
+            packageName = elementPackage.getQualifiedName().toString();
+        }
+        String className = packageAndClassName.getRight();
+        if (className == null) {
+            className = element.calculateClassNameWithPrefix(DECOR_CLASS_PREFIX);
+        }
+        return new DecorClass(packageName, className, element, this);
     }
 
     private void error(Element element, String message, Object... args) {

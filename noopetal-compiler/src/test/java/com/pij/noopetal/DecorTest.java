@@ -284,4 +284,98 @@ public class DecorTest {
         assertGeneration(source, expected);
     }
 
+    @Test
+    public void test_specifiedFullClassname_CompilesAndGeneratesSpecificiedClass() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Decor(\"another.pckg.AnotherClass\")",
+                                               "public interface Test {",
+                                               "}");
+        JavaFileObject expected = forSourceLines("another.pckg.AnotherClass",
+                                                 "package another.pckg;",
+                                                 "import android.support.annotation.NonNull;",
+                                                 "import test.Test;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class AnotherClass implements Test {",
+                                                 "",
+                                                 "private final Test decorated;",
+                                                 "",
+                                                 "public DecoratingTest(@NonNull final Test decorated) {",
+                                                 "this.decorated = decorated;",
+                                                 "}",
+                                                 "}");
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_specifiedSimpleClassName_CompilesAndGeneratesSpecificiedClassInSamePackage() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Decor(\"AnotherClass\")",
+                                               "public interface Test {",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test.AnotherClass",
+                                                 "package test;",
+                                                 "import android.support.annotation.NonNull;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class AnotherClass implements Test {",
+                                                 "",
+                                                 "private final Test decorated;",
+                                                 "",
+                                                 "public DecoratingTest(@NonNull final Test decorated) {",
+                                                 "this.decorated = decorated;",
+                                                 "}",
+                                                 "}");
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_specifiedDottedClassName_CompilesAndGeneratesSpecificiedClassInSamePackage() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Decor(\".AnotherClass\")",
+                                               "public interface Test {",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test.AnotherClass",
+                                                 "package test;",
+                                                 "import android.support.annotation.NonNull;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class AnotherClass implements Test {",
+                                                 "",
+                                                 "private final Test decorated;",
+                                                 "",
+                                                 "public DecoratingTest(@NonNull final Test decorated) {",
+                                                 "this.decorated = decorated;",
+                                                 "}",
+                                                 "}");
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_specifiedPackage_CompilesAndGeneratesInSpecificiedPackageWithStandardName() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Decor(\"another.pckg.\")",
+                                               "public interface Test {",
+                                               "}");
+        JavaFileObject expected = forSourceLines("another.pckg.DecoratingTest",
+                                                 "package another.pckg;",
+                                                 "import android.support.annotation.NonNull;",
+                                                 "import test.Test;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class DecoratingTest implements Test {",
+                                                 "",
+                                                 "private final Test decorated;",
+                                                 "",
+                                                 "public DecoratingTest(@NonNull final Test decorated) {",
+                                                 "this.decorated = decorated;",
+                                                 "}",
+                                                 "}");
+        assertGeneration(source, expected);
+    }
+
 }

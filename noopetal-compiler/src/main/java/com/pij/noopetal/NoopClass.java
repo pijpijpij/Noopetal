@@ -12,8 +12,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
-import static com.pij.noopetal.GeneratedClassUtil.applyAccessModifier;
-import static com.pij.noopetal.GeneratedClassUtil.createGeneratedAnnotation;
+import static com.pij.noopetal.ClassGenerationUtil.createGeneratedAnnotation;
 import static org.apache.commons.lang3.Validate.notNull;
 
 final class NoopClass implements GeneratedClass {
@@ -21,9 +20,9 @@ final class NoopClass implements GeneratedClass {
     private final String classPackage;
     private final String className;
     private final Class<? extends Processor> processorClass;
-    private final TypeElement sourceType;
+    private final EnrichedTypeElement sourceType;
 
-    public NoopClass(@NonNull String classPackage, @NonNull String className, @NonNull TypeElement sourceType,
+    public NoopClass(@NonNull String classPackage, @NonNull String className, @NonNull EnrichedTypeElement sourceType,
                      @NonNull Processor processor) {
         this.classPackage = notNull(classPackage);
         this.className = notNull(className);
@@ -33,14 +32,14 @@ final class NoopClass implements GeneratedClass {
 
     private static MethodSpec.Builder createOverridingMethod(ExecutableElement element) {
         final MethodSpec.Builder result = MethodSpec.overriding(element);
-        final String literal = GeneratedClassUtil.defaultReturnLiteral(element.getReturnType());
+        final String literal = ClassGenerationUtil.defaultReturnLiteral(element.getReturnType());
         if (literal != null) result.addStatement("return $L", literal);
         return result;
     }
 
     @Override
     public TypeElement getSourceType() {
-        return sourceType;
+        return sourceType.getTypeElement();
     }
 
     @Override
@@ -60,8 +59,8 @@ final class NoopClass implements GeneratedClass {
     @NonNull
     public TypeSpec getTypeSpec() {
         TypeSpec.Builder result = TypeSpec.classBuilder(className);
-        applyAccessModifier(sourceType, result);
-        GeneratedClassUtil.applyTypeVariables(sourceType, result);
+        sourceType.applyAccessModifier(result);
+        sourceType.applyTypeVariables(result);
         result.addJavadoc(createGeneratedAnnotation(processorClass).toString());
         result.addSuperinterface(TypeName.get(sourceType.asType()));
 

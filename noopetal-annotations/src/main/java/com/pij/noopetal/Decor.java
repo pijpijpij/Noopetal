@@ -37,4 +37,13 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 // TODO add @NonNull and notNull check
 @Retention(SOURCE)
 @Target(TYPE)
-public @interface Decor { }
+public @interface Decor {
+
+    /**
+     * Name of the class to generate. If it does not include a package, the package of the annotated interface is used.
+     * If it only includes a package (i.e. the last character is a '.', the name of the annotated interface is used,
+     * prefixed with <code>"Decorating"</code>.</p> Valid values:<ul> <li><code>com.me.TheClass</code></li>
+     * <li><code>com.me.</code></li> <li><code>.TheClass</code></li> <li><code>TheClass</code></li> </ul>
+     */
+    String value() default "";
+}

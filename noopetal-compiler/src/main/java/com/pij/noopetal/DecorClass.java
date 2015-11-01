@@ -16,8 +16,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 
-import static com.pij.noopetal.GeneratedClassUtil.applyAccessModifier;
-import static com.pij.noopetal.GeneratedClassUtil.createGeneratedAnnotation;
+import static com.pij.noopetal.ClassGenerationUtil.createGeneratedAnnotation;
 import static org.apache.commons.lang3.Validate.notNull;
 
 /**
@@ -29,9 +28,9 @@ public class DecorClass implements GeneratedClass {
     private final String classPackage;
     private final String className;
     private final Class<? extends Processor> processorClass;
-    private final TypeElement sourceType;
+    private final EnrichedTypeElement sourceType;
 
-    public DecorClass(@NonNull String classPackage, @NonNull String className, @NonNull TypeElement sourceType,
+    public DecorClass(@NonNull String classPackage, @NonNull String className, @NonNull EnrichedTypeElement sourceType,
                       @NonNull Processor processor) {
         this.classPackage = notNull(classPackage);
         this.className = notNull(className);
@@ -41,7 +40,7 @@ public class DecorClass implements GeneratedClass {
 
     @Override
     public TypeElement getSourceType() {
-        return sourceType;
+        return sourceType.getTypeElement();
     }
 
 
@@ -59,8 +58,8 @@ public class DecorClass implements GeneratedClass {
     @Override
     public TypeSpec getTypeSpec() {
         TypeSpec.Builder result = TypeSpec.classBuilder(getClassName());
-        applyAccessModifier(sourceType, result);
-        GeneratedClassUtil.applyTypeVariables(sourceType, result);
+        sourceType.applyAccessModifier(result);
+        sourceType.applyTypeVariables(result);
         result.addJavadoc(createGeneratedAnnotation(processorClass).toString());
         result.addSuperinterface(getDecoratedTypeName());
 
