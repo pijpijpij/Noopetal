@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 1.0.0
+-------------
+
+  * Added '@Decor' annotation to generate a decorator implementation of the marked interface.
+
+
 Version 0.1.0 *(unpublished)*
 ----------------------------
 
