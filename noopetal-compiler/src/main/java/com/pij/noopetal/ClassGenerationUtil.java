@@ -19,7 +19,7 @@ import static org.apache.commons.lang3.StringUtils.stripToNull;
 /**
  * @author Pierrejean on 25/10/2015.
  */
-public class ClassGenerationUtil {
+class ClassGenerationUtil {
 
     @NonNull
     public static AnnotationSpec createGeneratedAnnotation(@NonNull Class<? extends Processor> processorClass) {

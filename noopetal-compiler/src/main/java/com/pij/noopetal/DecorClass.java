@@ -22,7 +22,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 /**
  * @author Pierrejean on 25/10/2015.
  */
-public class DecorClass implements GeneratedClass {
+class DecorClass implements GeneratedClass {
 
     public static final String DECORATED_FIELD_NAME = "decorated";
     private final String classPackage;

@@ -11,7 +11,7 @@ import javax.lang.model.element.PackageElement;
 
 import static com.pij.noopetal.ClassGenerationUtil.extractPackageAndClassName;
 
-public final class DecorProcessingStep extends PrefixedClassGenerator {
+final class DecorProcessingStep extends PrefixedClassGenerator {
 
     private static final String DECOR_CLASS_PREFIX = "Decorating";
 

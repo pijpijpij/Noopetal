@@ -9,7 +9,7 @@ import javax.lang.model.element.TypeElement;
 /**
  * @author Pierrejean on 25/10/2015.
  */
-public interface GeneratedClass {
+interface GeneratedClass {
 
     TypeElement getSourceType();
 

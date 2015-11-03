@@ -11,7 +11,7 @@ import javax.lang.model.element.PackageElement;
 
 import static com.pij.noopetal.ClassGenerationUtil.extractPackageAndClassName;
 
-public final class NoopProcessingStep extends PrefixedClassGenerator {
+final class NoopProcessingStep extends PrefixedClassGenerator {
 
     private static final String NOOP_CLASS_PREFIX = "Noop";
 

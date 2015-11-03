@@ -24,7 +24,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 /**
  * @author Pierrejean on 25/10/2015.
  */
-public class EnrichedTypeElement {
+class EnrichedTypeElement {
 
     private final TypeElement typeElement;
     private final Elements elementUtils;
