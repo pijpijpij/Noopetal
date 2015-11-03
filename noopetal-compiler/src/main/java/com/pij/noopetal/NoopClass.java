@@ -23,10 +23,10 @@ final class NoopClass implements GeneratedClass {
     private final EnrichedTypeElement sourceType;
 
     public NoopClass(@NonNull String classPackage, @NonNull String className, @NonNull EnrichedTypeElement sourceType,
-                     @NonNull Processor processor) {
+                     @NonNull Class<? extends Processor> processorClass) {
         this.classPackage = notNull(classPackage);
         this.className = notNull(className);
-        this.processorClass = notNull(processor).getClass();
+        this.processorClass = notNull(processorClass);
         this.sourceType = notNull(sourceType);
     }
 
@@ -55,14 +55,14 @@ final class NoopClass implements GeneratedClass {
     /**
      * The access modifier is that of the sourceType.
      */
-    @Override
     @NonNull
+    @Override
     public TypeSpec getTypeSpec() {
-        TypeSpec.Builder result = TypeSpec.classBuilder(className);
+        TypeSpec.Builder result = TypeSpec.classBuilder(getClassName());
         sourceType.applyAccessModifier(result);
         sourceType.applyTypeVariables(result);
         result.addJavadoc(createGeneratedAnnotation(processorClass).toString());
-        result.addSuperinterface(TypeName.get(sourceType.asType()));
+        result.addSuperinterface(getDecoratedTypeName());
 
         for (Element element : sourceType.getEnclosedElements()) {
             if (element.getKind() == ElementKind.METHOD) {
@@ -72,6 +72,10 @@ final class NoopClass implements GeneratedClass {
         }
 
         return result.build();
+    }
+
+    private TypeName getDecoratedTypeName() {
+        return TypeName.get(sourceType.asType());
     }
 
 }

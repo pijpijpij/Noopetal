@@ -31,10 +31,10 @@ public class DecorClass implements GeneratedClass {
     private final EnrichedTypeElement sourceType;
 
     public DecorClass(@NonNull String classPackage, @NonNull String className, @NonNull EnrichedTypeElement sourceType,
-                      @NonNull Processor processor) {
+                      @NonNull Class<? extends Processor> processorClass) {
         this.classPackage = notNull(classPackage);
         this.className = notNull(className);
-        this.processorClass = notNull(processor).getClass();
+        this.processorClass = notNull(processorClass);
         this.sourceType = notNull(sourceType);
     }
 
@@ -42,7 +42,6 @@ public class DecorClass implements GeneratedClass {
     public TypeElement getSourceType() {
         return sourceType.getTypeElement();
     }
-
 
     @Override
     public String getClassName() {
@@ -54,6 +53,9 @@ public class DecorClass implements GeneratedClass {
         return classPackage;
     }
 
+    /**
+     * The access modifier is that of the sourceType.
+     */
     @NonNull
     @Override
     public TypeSpec getTypeSpec() {
