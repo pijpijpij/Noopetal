@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 1.1.1
+-------------
+
+  * FIX: code generated in library noopetal-annotation is now back to the intended 1.7 (was 1.8 preventing it working on Android).
+
 Version 1.1.0
 -------------
 
