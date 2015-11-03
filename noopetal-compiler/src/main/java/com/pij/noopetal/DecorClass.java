@@ -24,7 +24,8 @@ import static org.apache.commons.lang3.Validate.notNull;
  */
 class DecorClass implements GeneratedClass {
 
-    public static final String DECORATED_FIELD_NAME = "decorated";
+    private static final String DECORATED_FIELD_NAME = "decorated";
+
     private final String classPackage;
     private final String className;
     private final Class<? extends Processor> processorClass;

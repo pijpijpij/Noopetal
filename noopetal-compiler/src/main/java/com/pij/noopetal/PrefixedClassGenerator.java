@@ -65,7 +65,7 @@ abstract class PrefixedClassGenerator implements BasicAnnotationProcessor.Proces
         return processingEnv.getMessager();
     }
 
-    protected void createFiles(Set<GeneratedClass> sourceClasses) {
+    private void createFiles(Set<GeneratedClass> sourceClasses) {
         for (GeneratedClass source : sourceClasses) {
             createFile(source);
         }
