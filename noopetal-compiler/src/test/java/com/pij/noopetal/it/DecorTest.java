@@ -1,6 +1,8 @@
-package com.pij.noopetal;
+package com.pij.noopetal.it;
 
 import com.google.common.base.Joiner;
+import com.pij.noopetal.Decor;
+import com.pij.noopetal.NoopetalProcessor;
 
 import org.junit.Test;
 
