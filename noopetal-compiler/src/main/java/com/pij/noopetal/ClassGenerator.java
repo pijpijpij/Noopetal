@@ -30,13 +30,13 @@ import static org.apache.commons.lang3.Validate.notNull;
 /**
  * Contains common code for processing an annotation that results in the generation of a single Java file.
  */
-abstract class PrefixedClassGenerator implements BasicAnnotationProcessor.ProcessingStep {
+abstract class ClassGenerator implements BasicAnnotationProcessor.ProcessingStep {
 
     private final Class<? extends Processor> processorClass;
     private final ProcessingEnvironment processingEnv;
 
-    public PrefixedClassGenerator(@NonNull Class<? extends Processor> processorClass,
-                                  @NonNull ProcessingEnvironment processingEnv) {
+    public ClassGenerator(@NonNull Class<? extends Processor> processorClass,
+                          @NonNull ProcessingEnvironment processingEnv) {
         this.processorClass = notNull(processorClass);
         this.processingEnv = notNull(processingEnv);
     }
@@ -151,9 +151,6 @@ abstract class PrefixedClassGenerator implements BasicAnnotationProcessor.Proces
      */
     protected abstract GeneratedClass createGeneratedClass(EnrichedTypeElement element,
                                                            Class<? extends Processor> processorClass);
-
-    @NonNull
-    protected abstract String getClassPrefix();
 
     private void error(Element element, String message, Object... args) {
         if (args.length > 0) {
