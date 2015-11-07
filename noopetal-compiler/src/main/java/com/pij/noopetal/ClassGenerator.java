@@ -49,7 +49,7 @@ abstract class ClassGenerator implements BasicAnnotationProcessor.ProcessingStep
     @Override
     public final void process(SetMultimap<Class<? extends Annotation>, Element> elementsByAnnotation) {
 
-        Set<GeneratedClass> targetClasses = findAndParseTargets(elementsByAnnotation.get(getAnnotation()));
+        Set<GeneratedType> targetClasses = findAndParseTargets(elementsByAnnotation.get(getAnnotation()));
         createFiles(targetClasses);
     }
 
@@ -65,28 +65,28 @@ abstract class ClassGenerator implements BasicAnnotationProcessor.ProcessingStep
         return processingEnv.getMessager();
     }
 
-    private void createFiles(Set<GeneratedClass> sourceClasses) {
-        for (GeneratedClass source : sourceClasses) {
+    private void createFiles(Set<GeneratedType> sourceClasses) {
+        for (GeneratedType source : sourceClasses) {
             createFile(source);
         }
     }
 
-    private void createFile(GeneratedClass source) {
-        final JavaFile file = JavaFile.builder(source.getClassPackage(), source.getTypeSpec())
+    private void createFile(GeneratedType source) {
+        final JavaFile file = JavaFile.builder(source.getTypePackage(), source.getTypeSpec())
                                       .skipJavaLangImports(true)
                                       .build();
         try {
             file.writeTo(getFiler());
         } catch (IOException e) {
             final TypeElement sourceType = source.getSourceType();
-            final String className = source.getClassName();
+            final String className = source.getTypeName();
             error(sourceType, "Unable to write file %s of type %s: %s", className, sourceType, e.getMessage());
         }
     }
 
     // Process each annotated element.
-    private Set<GeneratedClass> findAndParseTargets(Set<Element> elements) {
-        Set<GeneratedClass> result = new LinkedHashSet<>();
+    private Set<GeneratedType> findAndParseTargets(Set<Element> elements) {
+        Set<GeneratedType> result = new LinkedHashSet<>();
 
         for (Element element : elements) {
             // Not too sure what this extra validation does, especially since it doesn't log what's wrong, but Wharton
@@ -135,10 +135,10 @@ abstract class ClassGenerator implements BasicAnnotationProcessor.ProcessingStep
     /**
      * This is where information about the annotation should be/is gathered.
      */
-    private void parse(Element element, Set<GeneratedClass> targetClasses) {
+    private void parse(Element element, Set<GeneratedType> targetClasses) {
         TypeElement typeElement = (TypeElement)element;
 
-        GeneratedClass result = createGeneratedClass(new EnrichedTypeElement(typeElement, getElementUtils()),
+        GeneratedType result = createGeneratedClass(new EnrichedTypeElement(typeElement, getElementUtils()),
                                                      processorClass);
         targetClasses.add(result);
     }
@@ -149,7 +149,7 @@ abstract class ClassGenerator implements BasicAnnotationProcessor.ProcessingStep
      * @param element annotated interface, assumed valid
      * @return a representation of the generated class.
      */
-    protected abstract GeneratedClass createGeneratedClass(EnrichedTypeElement element,
+    protected abstract GeneratedType createGeneratedClass(EnrichedTypeElement element,
                                                            Class<? extends Processor> processorClass);
 
     private void error(Element element, String message, Object... args) {

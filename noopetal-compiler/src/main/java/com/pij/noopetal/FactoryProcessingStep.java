@@ -11,22 +11,22 @@ import javax.lang.model.element.PackageElement;
 
 import static com.pij.noopetal.ClassGenerationUtil.extractPackageAndClassName;
 
-final class NoopProcessingStep extends ClassGenerator {
+final class FactoryProcessingStep extends ClassGenerator {
 
-    private static final String NOOP_CLASS_PREFIX = "Noop";
+    private static final String FACTORY_CLASS_PREFIX = "Factory";
 
-    public NoopProcessingStep(@NonNull Class<? extends Processor> processorClass,
-                              @NonNull ProcessingEnvironment processingEnv) {
+    public FactoryProcessingStep(@NonNull Class<? extends Processor> processorClass,
+                                 @NonNull ProcessingEnvironment processingEnv) {
         super(processorClass, processingEnv);
     }
 
     @NonNull
-    protected Class<Noop> getAnnotation() {
-        return Noop.class;
+    protected Class<Factory> getAnnotation() {
+        return Factory.class;
     }
 
     /**
-     * @return <code>true</code> if the element is a valid target of the {@link Noop} annotation.
+     * @return <code>true</code> if the element is a valid target of the {@link Factory} annotation.
      */
     protected boolean validate(Element element) {
         return validateAnnotatedIsInterface(element);
@@ -40,7 +40,7 @@ final class NoopProcessingStep extends ClassGenerator {
      */
     @Override
     protected GeneratedType createGeneratedClass(EnrichedTypeElement element,
-                                                  Class<? extends Processor> processorClass) {
+                                                 Class<? extends Processor> processorClass) {
 
         final String specifiedClass = element.getAnnotation(getAnnotation()).value();
         final Pair<String, String> packageAndClassName = extractPackageAndClassName(specifiedClass);
@@ -51,14 +51,14 @@ final class NoopProcessingStep extends ClassGenerator {
         }
         String className = packageAndClassName.getRight();
         if (className == null) {
-            className = element.calculateClassNameWithPrefix(getClassPrefix());
+            className = element.calculateClassNameWithSuffix(getClassSuffix());
         }
-        return new NoopClass(packageName, className, element, processorClass);
+        return new FactoryInterface(packageName, className, element, processorClass);
     }
 
     @NonNull
-    protected String getClassPrefix() {
-        return NOOP_CLASS_PREFIX;
+    protected String getClassSuffix() {
+        return FACTORY_CLASS_PREFIX;
     }
 
 }

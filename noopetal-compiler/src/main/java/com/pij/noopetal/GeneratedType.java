@@ -9,13 +9,13 @@ import javax.lang.model.element.TypeElement;
 /**
  * @author Pierrejean on 25/10/2015.
  */
-interface GeneratedClass {
+interface GeneratedType {
 
     TypeElement getSourceType();
 
-    String getClassName();
+    String getTypeName();
 
-    String getClassPackage();
+    String getTypePackage();
 
     @NonNull
     TypeSpec getTypeSpec();

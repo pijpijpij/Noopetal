@@ -19,7 +19,8 @@ public final class NoopetalProcessor extends BasicAnnotationProcessor {
     @Override
     protected Iterable<? extends ProcessingStep> initSteps() {
         return Arrays.asList(new NoopProcessingStep(getClass(), processingEnv),
-                             new DecorProcessingStep(getClass(), processingEnv));
+                             new DecorProcessingStep(getClass(), processingEnv),
+                             new FactoryProcessingStep(getClass(), processingEnv));
     }
 
 }

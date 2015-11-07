@@ -7,6 +7,7 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -73,15 +74,33 @@ class EnrichedTypeElement {
 
     @NonNull
     public String calculateClassNameWithPrefix(String prefix) {
-        int packageLen = getPackage().getQualifiedName().length() + 1;
-        final String simpleClassName = typeElement.getQualifiedName().toString().substring(packageLen);
-        String containingClassPrefix = StringUtils.EMPTY;
+        Pair<String, String> splitName = getSplitSimpleClassName();
+        return splitName.getLeft() + prefix + splitName.getRight();
+    }
+
+    @NonNull
+    public String calculateClassNameWithSuffix(String suffix) {
+        Pair<String, String> splitName = getSplitSimpleClassName();
+        return splitName.getLeft() + splitName.getRight() + suffix;
+    }
+
+    @NonNull
+    private Pair<String, String> getSplitSimpleClassName() {
+        final String simpleClassName = getSimpleClassName();
         final int lastDot = simpleClassName.lastIndexOf('.');
+        String containingClassPrefix = StringUtils.EMPTY;
         if (lastDot >= 0) {
             String containingClassName = simpleClassName.substring(0, lastDot);
             containingClassPrefix = containingClassName.replace('.', '_') + "_";
         }
-        return containingClassPrefix + prefix + simpleClassName.substring(lastDot + 1);
+        final String shortClassName = simpleClassName.substring(lastDot + 1);
+        return Pair.of(containingClassPrefix, shortClassName);
+    }
+
+    @NonNull
+    private String getSimpleClassName() {
+        int packageLen = getPackage().getQualifiedName().length() + 1;
+        return typeElement.getQualifiedName().toString().substring(packageLen);
     }
 
     public List<? extends Element> getEnclosedElements() {

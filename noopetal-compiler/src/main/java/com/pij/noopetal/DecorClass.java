@@ -22,7 +22,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 /**
  * @author Pierrejean on 25/10/2015.
  */
-class DecorClass implements GeneratedClass {
+class DecorClass implements GeneratedType {
 
     private static final String DECORATED_FIELD_NAME = "decorated";
 
@@ -45,12 +45,12 @@ class DecorClass implements GeneratedClass {
     }
 
     @Override
-    public String getClassName() {
+    public String getTypeName() {
         return className;
     }
 
     @Override
-    public String getClassPackage() {
+    public String getTypePackage() {
         return classPackage;
     }
 
@@ -60,7 +60,7 @@ class DecorClass implements GeneratedClass {
     @NonNull
     @Override
     public TypeSpec getTypeSpec() {
-        TypeSpec.Builder result = TypeSpec.classBuilder(getClassName());
+        TypeSpec.Builder result = TypeSpec.classBuilder(getTypeName());
         sourceType.applyAccessModifier(result);
         sourceType.applyTypeVariables(result);
         result.addJavadoc(createGeneratedAnnotation(processorClass).toString());

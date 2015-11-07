@@ -39,7 +39,7 @@ final class DecorProcessingStep extends ClassGenerator {
      * @return a representation of the generated class.
      */
     @Override
-    protected GeneratedClass createGeneratedClass(EnrichedTypeElement element,
+    protected GeneratedType createGeneratedClass(EnrichedTypeElement element,
                                                   Class<? extends Processor> processorClass) {
 
         final String specifiedClass = element.getAnnotation(getAnnotation()).value();
