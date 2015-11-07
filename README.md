@@ -8,11 +8,15 @@ Generation of standard classes from interfaces:
    often used as base for classes that handle only some event/method calls of the annotated interface.
  * `@Decor` generates a class that passes all calls to another implementation of the interface. Really useful to
    create decorators.
+ * `@Factory` generates a factory *interface* that provides instance of the marked interface. Mostly used in Android 
+   when a Fragment expects it Activity to provide it with an instance
 
 ```java
 package com.company.example;
 
 @Noop
+@Decor
+@Factory
 interface ExampleInterface {
 
   void setProperty(String value);
@@ -22,6 +26,7 @@ interface ExampleInterface {
 ```
 
 The generated code will look like this:
+# @Noop
 
 ```java
 package com.company.example;
@@ -39,6 +44,8 @@ public class NoopExampleInterface {
 
 }
 ```
+# @Decor
+
 ```java
 package com.company.example;
 
@@ -62,6 +69,20 @@ public class DecoratingExampleInterface {
 
 }
 ```
+# @Factory
+
+```java
+package com.company.example;
+
+/**
+ * @Generated ..
+ */
+public class ExampleInterfaceFactory {
+  
+  ExampleInterface createExampleInterface();
+
+}
+```
 
 ## Next features
 Generate a decorator for non-final classes with non-final public methods.
@@ -76,12 +97,12 @@ Then, in a Maven project:
 <dependency>
   <groupId>com.pij</groupId>
   <artifactId>com.pij.noopetal</artifactId>
-  <version>0.1.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 or Gradle for a Java project:
 ```groovy
-compile 'com.pij:com.pij.noopetal:0.1.0'
+compile 'com.pij:com.pij.noopetal:1.2.0'
 ```
 
 For the SNAPSHOT version:
@@ -89,12 +110,12 @@ For the SNAPSHOT version:
 <dependency>
   <groupId>com.pij</groupId>
   <artifactId>com.pij.noopetal</artifactId>
-  <version>0.1.0</version>
+  <version>1.2.0</version>
 </dependency>
 <dependency>
   <groupId>com.pij</groupId>
   <artifactId>com.pij.noopetal-compiler</artifactId>
-  <version>0.1.0</version>
+  <version>1.2.0</version>
   <optional>true</optional>
 </dependency>
 ```
@@ -109,8 +130,8 @@ buildscript {
 apply plugin: 'com.neenbedankt.android-apt'
 
 dependencies {
-  compile 'com.pij:com.pij.noopetal:0.1.0'
-  apt 'com.pij:com.pij.noopetal-compiler:0.1.0'
+  compile 'com.pij:com.pij.noopetal:1.2.0'
+  apt 'com.pij:com.pij.noopetal-compiler:1.2.0'
 }
 ```
 

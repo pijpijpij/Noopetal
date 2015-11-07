@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 1.2.0
+-------------
+
+  * Added '@Factory' annotation to generate an interface that create instance of the marked interface.
+
 Version 1.1.1
 -------------
 
