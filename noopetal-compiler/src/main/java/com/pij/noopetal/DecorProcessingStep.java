@@ -53,7 +53,11 @@ final class DecorProcessingStep extends ClassGenerator {
         if (className == null) {
             className = element.calculateClassNameWithPrefix(getClassPrefix());
         }
-        return new DecorClass(packageName, className, element, processorClass);
+        return new DecorClass(packageName,
+                              className,
+                              element,
+                              processorClass,
+                              element.getAnnotation(getAnnotation()).mutable());
     }
 
     @NonNull

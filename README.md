@@ -46,6 +46,13 @@ public class NoopExampleInterface {
 ```
 # @Decor
 
+This annotation has 2 attributes:
+
+  - The name of the class, which can be defined in the `value` attribute.
+  - Specifiying the attribute `mutable` as `true` will generate a setter for the decorated property, so it can be changed
+    after creation.
+    
+    
 ```java
 package com.company.example;
 

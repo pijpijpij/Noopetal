@@ -380,4 +380,53 @@ public class DecorTest {
         assertGeneration(source, expected);
     }
 
+    @Test
+    public void test_mutableSpecifiedFalse_CompilesAndGeneratesTheSameAsDefault() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Decor(mutable=false)",
+                                               "public interface Test {",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test/DecoratingTest",
+                                                 "package test;",
+                                                 "",
+                                                 "import android.support.annotation.NonNull;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class DecoratingTest implements Test {",
+                                                 "",
+                                                 "private final Test decorated;",
+                                                 "",
+                                                 "public DecoratingTest(@NonNull final Test decorated) {",
+                                                 "this.decorated = decorated;",
+                                                 "}",
+                                                 "}");
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_mutableTrue_CompilesAndGeneratesSetter() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Decor(mutable=true)",
+                                               "public interface Test {",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test/DecoratingTest",
+                                                 "package test;",
+                                                 "import android.support.annotation.NonNull;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class DecoratingTest implements Test {",
+                                                 "private Test decorated;",
+                                                 "public DecoratingTest(@NonNull final Test decorated) {",
+                                                 "this.decorated = decorated;",
+                                                 "}",
+                                                 "",
+                                                 "public void setDecorated(@NonNull final Test newValue) {",
+                                                 "this.decorated = newValue;",
+                                                 "}",
+                                                 "}");
+        assertGeneration(source, expected);
+    }
+
 }

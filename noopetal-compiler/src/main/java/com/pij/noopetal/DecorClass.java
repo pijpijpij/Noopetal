@@ -8,6 +8,8 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import javax.annotation.processing.Processor;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -30,9 +32,11 @@ class DecorClass implements GeneratedType {
     private final String className;
     private final Class<? extends Processor> processorClass;
     private final EnrichedTypeElement sourceType;
+    private final boolean mutable;
 
     public DecorClass(@NonNull String classPackage, @NonNull String className, @NonNull EnrichedTypeElement sourceType,
-                      @NonNull Class<? extends Processor> processorClass) {
+                      @NonNull Class<? extends Processor> processorClass, boolean mutable) {
+        this.mutable = mutable;
         this.classPackage = notNull(classPackage);
         this.className = notNull(className);
         this.processorClass = notNull(processorClass);
@@ -67,12 +71,11 @@ class DecorClass implements GeneratedType {
         result.addSuperinterface(getDecoratedTypeName());
 
         // Add delegate field and constructor
-        final FieldSpec decorated = FieldSpec.builder(getDecoratedTypeName(),
-                                                      DECORATED_FIELD_NAME,
-                                                      Modifier.PRIVATE,
-                                                      Modifier.FINAL).build();
+        final FieldSpec decorated = FieldSpec.builder(getDecoratedTypeName(), DECORATED_FIELD_NAME, getFieldModifiers())
+                                             .build();
         result.addField(decorated);
         result.addMethod(createConstructor());
+        if (mutable) result.addMethod(createSetter());
 
         for (Element element : sourceType.getEnclosedElements()) {
             if (element.getKind() == ElementKind.METHOD) {
@@ -82,6 +85,14 @@ class DecorClass implements GeneratedType {
         }
 
         return result.build();
+    }
+
+    @NonNull
+    private Modifier[] getFieldModifiers() {
+        Modifier[] result = new Modifier[]{ Modifier.PRIVATE };
+        if (!mutable) result = ArrayUtils.add(result, Modifier.FINAL);
+
+        return result;
     }
 
     private TypeName getDecoratedTypeName() {
@@ -117,6 +128,20 @@ class DecorClass implements GeneratedType {
         param.addAnnotation(NonNull.class);
 
         final MethodSpec.Builder result = MethodSpec.constructorBuilder();
+        result.addModifiers(Modifier.PUBLIC);
+        result.addParameter(param.build());
+        result.addStatement("this." + DECORATED_FIELD_NAME + " = " + parameterName);
+        return result.build();
+    }
+
+    private MethodSpec createSetter() {
+        final String parameterName = "newValue";
+        final ParameterSpec.Builder param = ParameterSpec.builder(getDecoratedTypeName(),
+                                                                  parameterName,
+                                                                  Modifier.FINAL);
+        param.addAnnotation(NonNull.class);
+
+        final MethodSpec.Builder result = MethodSpec.methodBuilder("setDecorated");
         result.addModifiers(Modifier.PUBLIC);
         result.addParameter(param.build());
         result.addStatement("this." + DECORATED_FIELD_NAME + " = " + parameterName);

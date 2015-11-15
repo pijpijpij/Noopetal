@@ -46,4 +46,16 @@ public @interface Decor {
      * <li><code>com.me.</code></li> <li><code>.TheClass</code></li> <li><code>TheClass</code></li> </ul>
      */
     String value() default "";
+
+    /**
+     * If set, the decorated object can be changed: an additional setter is added. It can be called:
+     * <pre>
+     *     TheClass decorated;
+     *     TheClass anotherDecorated;
+     *     DecoratingTheClass generated = new DecoratingTheClass(decorated);
+     *     // ...
+     *     generated.setDecorated(anotherDecorated);
+     * </pre>
+     */
+    boolean mutable() default false;
 }
