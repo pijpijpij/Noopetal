@@ -68,6 +68,7 @@ class DecorClass implements GeneratedType {
         sourceType.applyAccessModifier(result);
         sourceType.applyTypeVariables(result);
         result.addJavadoc(createGeneratedAnnotation(processorClass).toString());
+        result.addJavadoc("\n");
         result.addSuperinterface(getDecoratedTypeName());
 
         // Add delegate field and constructor

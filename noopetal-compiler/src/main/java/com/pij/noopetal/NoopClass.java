@@ -62,6 +62,7 @@ final class NoopClass implements GeneratedType {
         sourceType.applyAccessModifier(result);
         sourceType.applyTypeVariables(result);
         result.addJavadoc(createGeneratedAnnotation(processorClass).toString());
+        result.addJavadoc("\n");
         result.addSuperinterface(getDecoratedTypeName());
 
         for (Element element : sourceType.getEnclosedElements()) {

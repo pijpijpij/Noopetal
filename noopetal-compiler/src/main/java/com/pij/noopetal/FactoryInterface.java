@@ -61,6 +61,7 @@ final class FactoryInterface implements GeneratedType {
         sourceType.applyAccessModifier(result);
         sourceType.applyTypeVariables(result);
         result.addJavadoc(createGeneratedAnnotation(processorClass).toString());
+        result.addJavadoc("\n");
 
         MethodSpec method = createCreateMethod().build();
         result.addMethod(method);
