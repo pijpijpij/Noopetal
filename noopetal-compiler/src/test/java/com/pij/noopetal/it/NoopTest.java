@@ -202,6 +202,22 @@ public class NoopTest {
     }
 
     @Test
+    public void test_methodWithTwoArguments_CompilesAndGenerates() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               asList(addAll(STANDARD_SOURCE_HEADER,
+                                                             "void twoArgsMethod(String argOne, long argTwo);",
+                                                             "}")));
+        JavaFileObject expected = forSourceLines("test.NoopTest",
+                                                 asList(addAll(STANDARD_EXPECTED_HEADER,
+                                                               "@Override",
+                                                               "public void twoArgsMethod(String argOne, long argTwo) {",
+                                                               "}",
+                                                               "}")));
+
+        assertGeneration(source, expected);
+    }
+
+    @Test
     public void test_methodWithOneGenericArgument_CompilesAndGenerates() {
         JavaFileObject source = forSourceLines("test.Test",
                                                asList(addAll(STANDARD_SOURCE_HEADER,

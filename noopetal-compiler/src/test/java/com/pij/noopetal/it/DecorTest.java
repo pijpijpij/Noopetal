@@ -191,16 +191,16 @@ public class DecorTest {
     }
 
     @Test
-    public void test_methodWithOneArgument_CompilesAndGeneratesPassesArgumentToDecorated() {
+    public void test_methodWithTwoArguments_CompilesAndGeneratesPassesArgumentToDecorated() {
         JavaFileObject source = forSourceLines("test.Test",
                                                asList(addAll(STANDARD_SOURCE_HEADER,
-                                                             "void oneArgMethod(String anArg);",
+                                                             "void twoArgsMethod(String argOne, int argTwo);",
                                                              "}")));
         JavaFileObject expected = forSourceLines("test/DecoratingTest",
                                                  asList(addAll(STANDARD_EXPECTED_HEADER,
                                                                "@Override",
-                                                               "public void oneArgMethod(String anArg) {",
-                                                               "decorated.oneArgMethod(anArg);",
+                                                               "public void twoArgsMethod(String argOne, int argTwo) {",
+                                                               "decorated.twoArgsMethod(argOne, argTwo);",
                                                                "}",
                                                                "}")));
 
@@ -250,6 +250,23 @@ public class DecorTest {
                                                  "decorated.oneArgMethod(anArg);",
                                                  "}",
                                                  "}");
+
+        assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_methodWithOneArgument_CompilesAndGeneratesPassesArgumentToDecorated() {
+        JavaFileObject source = forSourceLines("test.Test",
+                                               asList(addAll(STANDARD_SOURCE_HEADER,
+                                                             "void oneArgMethod(String anArg);",
+                                                             "}")));
+        JavaFileObject expected = forSourceLines("test/DecoratingTest",
+                                                 asList(addAll(STANDARD_EXPECTED_HEADER,
+                                                               "@Override",
+                                                               "public void oneArgMethod(String anArg) {",
+                                                               "decorated.oneArgMethod(anArg);",
+                                                               "}",
+                                                               "}")));
 
         assertGeneration(source, expected);
     }

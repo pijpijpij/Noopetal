@@ -108,9 +108,9 @@ class DecorClass implements GeneratedType {
         String parameters = "";
         boolean firstParameter = true;
         for (ParameterSpec parameter : result.build().parameters) {
-            parameters += parameter.name;
             if (!firstParameter) parameters += ", ";
             else firstParameter = false;
+            parameters += parameter.name;
         }
         String format = "$N.$N(" + parameters + ")";
         if (element.getReturnType().getKind() != TypeKind.VOID) {
