@@ -9,7 +9,7 @@
         android:name="com.pij.noopetal.example.SimpleApp"
         android:allowBackup="false"
         android:label="@string/app_name"
-        tools:ignore="MissingApplicationIcon"
+        tools:ignore="GoogleAppIndexingWarning,MissingApplicationIcon"
         >
 
         <activity
