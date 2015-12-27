@@ -7,4 +7,4 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
 
-script: ./gradlew clean assD testD
+script: ./gradlew -I init.gradle clean assD testD
