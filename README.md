@@ -1,7 +1,6 @@
 # Noop et Al
 
-![Logo](miscellaneous/logo.jpg =500x)
-
+<img src="miscellaneous/logo.jpg" alt="Logo" width="500">
 Generation of standard classes from interfaces:
 
  * `@Noop` generates a class that does nothing and returned default values (0 or <code>null</code>). Classes of that kind are 
