@@ -2,14 +2,14 @@
 
 <img src="miscellaneous/logo.jpg" alt="Logo" width="500">
 
-Generation of standard classes from interfaces:
+This small library generates standard implementations of a given interface:
 
  * `@Noop` generates a class that does nothing and returned default values (0 or <code>null</code>). Classes of that kind are 
    often used as base for classes that handle only some event/method calls of the annotated interface.
  * `@Decor` generates a class that passes all calls to another implementation of the interface. Really useful to
    create decorators.
  * `@Factory` generates a factory *interface* that provides instance of the marked interface. Mostly used in Android 
-   when a Fragment expects it Activity to provide it with an instance
+   when a Fragment expects it Activity to provide it with an instance.
 
 ```java
 package com.company.example;
@@ -49,7 +49,7 @@ public class NoopExampleInterface {
 This annotation has 2 attributes:
 
   - The name of the class, which can be defined in the `value` attribute.
-  - Specifiying the attribute `mutable` as `true` will generate a setter for the decorated property, so it can be changed
+  - Specifying the attribute `mutable` as `true` will generate a setter for the decorated property, so it can be changed
     after creation.
     
     
