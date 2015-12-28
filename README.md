@@ -94,7 +94,7 @@ public class ExampleInterfaceFactory {
 # Miscellaneous
 
 ## Build status
-[![Build Status](https://travis-ci.org/pijpijpij/Noopetal.svg?branch=master)](https://travis-ci.org/pijpijpij/Noopetal)
+Thanks [Travis-CI](https://travis-ci.org) for providing a build system. The status of the last master build: [![Build Status](https://travis-ci.org/pijpijpij/Noopetal.svg?branch=master)](https://travis-ci.org/pijpijpij/Noopetal)
 
 ## Next features
 Support annotating interfaces with super-interfaces.
