@@ -1,6 +1,6 @@
 # Noop et Al
 
-![Logo](miscellaneous/logo.jpg)
+![Logo](miscellaneous/logo.jpg =500x)
 
 Generation of standard classes from interfaces:
 
@@ -26,7 +26,7 @@ interface ExampleInterface {
 ```
 
 The generated code will look like this:
-# @Noop
+## @Noop
 
 ```java
 package com.company.example;
@@ -44,7 +44,7 @@ public class NoopExampleInterface {
 
 }
 ```
-# @Decor
+## @Decor
 
 This annotation has 2 attributes:
 
@@ -76,7 +76,7 @@ public class DecoratingExampleInterface {
 
 }
 ```
-# @Factory
+## @Factory
 
 ```java
 package com.company.example;
@@ -91,11 +91,18 @@ public class ExampleInterfaceFactory {
 }
 ```
 
+# Miscellaneous
+
+## Build status
+[![Build Status](https://travis-ci.org/pijpijpij/Noopetal.svg?branch=master)](https://travis-ci.org/pijpijpij/Noopetal)
+
 ## Next features
+Support annotating interfaces with super-interfaces.
 Generate a decorator for non-final classes with non-final public methods.
 
+
 ## Download
-Only source download available, from this site!
+Only source download available, from this site! Releases are tagged.
 
 ## Usage
 To use, download the source for the version of interest, build it and install it in your local Maven repository.
