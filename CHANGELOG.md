@@ -1,10 +1,21 @@
 Change Log
 ==========
 
+Version 1.2.3
+-------------
+
+  * `@Noop` and `@Decor` now support interfaces with parent interfaces.
+  * Automatically built in Travis-CI.
+
+Version 1.2.2
+-------------
+
+  * `@Decor` supports methods with several arguments. Ooops!
+
 Version 1.2.1
 -------------
 
-  * Added `mutable` attribute to `@Decor` to allow for mutable decorated objeect.
+  * Added `mutable` attribute to `@Decor` to allow for mutable decorated object.
 
 Version 1.2.0
 -------------
