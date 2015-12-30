@@ -21,7 +21,7 @@ final class FactoryProcessingStep extends ClassGenerator {
     }
 
     @NonNull
-    protected Class<Factory> getAnnotation() {
+    protected Class<Factory> getSupportedAnnotation() {
         return Factory.class;
     }
 
@@ -42,7 +42,7 @@ final class FactoryProcessingStep extends ClassGenerator {
     protected GeneratedType createGeneratedClass(EnrichedTypeElement element,
                                                  Class<? extends Processor> processorClass) {
 
-        final String specifiedClass = element.getAnnotation(getAnnotation()).value();
+        final String specifiedClass = element.getAnnotation(getSupportedAnnotation()).value();
         final Pair<String, String> packageAndClassName = extractPackageAndClassName(specifiedClass);
         String packageName = packageAndClassName.getLeft();
         if (packageName == null) {

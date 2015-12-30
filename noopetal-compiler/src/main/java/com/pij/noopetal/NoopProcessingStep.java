@@ -21,7 +21,7 @@ final class NoopProcessingStep extends ClassGenerator {
     }
 
     @NonNull
-    protected Class<Noop> getAnnotation() {
+    protected Class<Noop> getSupportedAnnotation() {
         return Noop.class;
     }
 
@@ -42,7 +42,7 @@ final class NoopProcessingStep extends ClassGenerator {
     protected GeneratedType createGeneratedClass(EnrichedTypeElement element,
                                                   Class<? extends Processor> processorClass) {
 
-        final String specifiedClass = element.getAnnotation(getAnnotation()).value();
+        final String specifiedClass = element.getAnnotation(getSupportedAnnotation()).value();
         final Pair<String, String> packageAndClassName = extractPackageAndClassName(specifiedClass);
         String packageName = packageAndClassName.getLeft();
         if (packageName == null) {

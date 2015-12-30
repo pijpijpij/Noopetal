@@ -12,6 +12,7 @@ import static com.google.common.truth.Truth.assertAbout;
 import static com.google.testing.compile.JavaFileObjects.forSourceLines;
 import static com.google.testing.compile.JavaFileObjects.forSourceString;
 import static com.google.testing.compile.JavaSourceSubjectFactory.javaSource;
+import static com.google.testing.compile.JavaSourcesSubjectFactory.javaSources;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.ArrayUtils.addAll;
 
@@ -110,6 +111,26 @@ public class NoopTest {
                                  .processedWith(new NoopetalProcessor())
                                  .failsToCompile()
                                  .withErrorContaining("Test has private access in test.Container");
+    }
+
+    @Test
+    public void test_interfaceWithConstant_GeneratesEmptyClass() {
+        JavaFileObject source = forSourceString("test.Test",
+                                                Joiner.on('\n')
+                                                      .join("package test;",
+                                                            "@com.pij.noopetal.Noop",
+                                                            "public interface Test {",
+                                                            "String CONSTANT = \"some value\";",
+                                                            "}"));
+        JavaFileObject expected = forSourceLines("test.NoopTest",
+                                                 "package test;",
+                                                 "",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class NoopTest implements Test {",
+                                                 "}");
+        assertGeneration(source, expected);
+
     }
 
     @Test
@@ -369,6 +390,40 @@ public class NoopTest {
                                                  "public class NoopTest implements Test {",
                                                  "}");
         assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_inheritsFromInterfaceAndMethodVoidWithNoArguments_CompilesAndGeneratesCallsDecorated() {
+        JavaFileObject sourceParent = forSourceLines("test.TestParent",
+                                                     "package test;",
+                                                     "public interface TestParent {",
+                                                     "void thisMethod();",
+                                                     "}");
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Noop",
+                                               "public interface Test extends TestParent {",
+                                               "void thatMethod();",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test/NoopTest",
+                                                 "package test;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\")",
+                                                 " */",
+                                                 "public class NoopTest implements Test {",
+                                                 "",
+                                                 "@Override",
+                                                 "public void thisMethod() {",
+                                                 "}",
+                                                 "@Override",
+                                                 "public void thatMethod() {",
+                                                 "}",
+                                                 "}");
+        assertAbout(javaSources()).that(asList(sourceParent, source))
+                                  .processedWith(new NoopetalProcessor())
+                                  .compilesWithoutError()
+                                  .and()
+                                  .generatesSources(expected);
     }
 
 }

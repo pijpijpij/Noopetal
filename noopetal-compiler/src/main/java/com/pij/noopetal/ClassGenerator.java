@@ -43,14 +43,16 @@ abstract class ClassGenerator implements BasicAnnotationProcessor.ProcessingStep
 
     @Override
     public final Set<? extends Class<? extends Annotation>> annotations() {
-        return Collections.singleton(getAnnotation());
+        return Collections.singleton(getSupportedAnnotation());
     }
 
     @Override
-    public final void process(SetMultimap<Class<? extends Annotation>, Element> elementsByAnnotation) {
+    public final Set<Element> process(SetMultimap<Class<? extends Annotation>, Element> elementsByAnnotation) {
 
-        Set<GeneratedType> targetClasses = findAndParseTargets(elementsByAnnotation.get(getAnnotation()));
+        Set<GeneratedType> targetClasses = findAndParseTargets(elementsByAnnotation.get(getSupportedAnnotation()));
         createFiles(targetClasses);
+        // TODO Look into this: did we rally process all elements?
+        return Collections.emptySet();
     }
 
     private Elements getElementUtils() {
@@ -95,7 +97,7 @@ abstract class ClassGenerator implements BasicAnnotationProcessor.ProcessingStep
                 try {
                     parse(element, result);
                 } catch (Exception e) {
-                    logParsingError(element, getAnnotation(), e);
+                    logParsingError(element, getSupportedAnnotation(), e);
                 }
             }
         }
@@ -104,7 +106,7 @@ abstract class ClassGenerator implements BasicAnnotationProcessor.ProcessingStep
     }
 
     @NonNull
-    protected abstract Class<? extends Annotation> getAnnotation();
+    protected abstract Class<? extends Annotation> getSupportedAnnotation();
 
     /**
      * @return <code>true</code> if the element is a valid target of the {@link Noop} annotation.
@@ -119,7 +121,7 @@ abstract class ClassGenerator implements BasicAnnotationProcessor.ProcessingStep
         if (annotated.getKind() != INTERFACE) {
             error(annotated,
                   "@%s must only be applied to an interface. %s isn't",
-                  getAnnotation().getSimpleName(),
+                  getSupportedAnnotation().getSimpleName(),
                   annotated.getSimpleName());
             hasError = true;
         }
@@ -139,7 +141,7 @@ abstract class ClassGenerator implements BasicAnnotationProcessor.ProcessingStep
         TypeElement typeElement = (TypeElement)element;
 
         GeneratedType result = createGeneratedClass(new EnrichedTypeElement(typeElement, getElementUtils()),
-                                                     processorClass);
+                                                    processorClass);
         targetClasses.add(result);
     }
 
@@ -150,7 +152,7 @@ abstract class ClassGenerator implements BasicAnnotationProcessor.ProcessingStep
      * @return a representation of the generated class.
      */
     protected abstract GeneratedType createGeneratedClass(EnrichedTypeElement element,
-                                                           Class<? extends Processor> processorClass);
+                                                          Class<? extends Processor> processorClass);
 
     private void error(Element element, String message, Object... args) {
         if (args.length > 0) {

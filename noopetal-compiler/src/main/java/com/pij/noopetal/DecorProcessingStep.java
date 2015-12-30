@@ -21,7 +21,7 @@ final class DecorProcessingStep extends ClassGenerator {
     }
 
     @NonNull
-    protected Class<Decor> getAnnotation() {
+    protected Class<Decor> getSupportedAnnotation() {
         return Decor.class;
     }
 
@@ -42,7 +42,7 @@ final class DecorProcessingStep extends ClassGenerator {
     protected GeneratedType createGeneratedClass(EnrichedTypeElement element,
                                                   Class<? extends Processor> processorClass) {
 
-        final String specifiedClass = element.getAnnotation(getAnnotation()).value();
+        final String specifiedClass = element.getAnnotation(getSupportedAnnotation()).value();
         final Pair<String, String> packageAndClassName = extractPackageAndClassName(specifiedClass);
         String packageName = packageAndClassName.getLeft();
         if (packageName == null) {
@@ -55,9 +55,7 @@ final class DecorProcessingStep extends ClassGenerator {
         }
         return new DecorClass(packageName,
                               className,
-                              element,
-                              processorClass,
-                              element.getAnnotation(getAnnotation()).mutable());
+                              element, processorClass, element.getAnnotation(getSupportedAnnotation()).mutable());
     }
 
     @NonNull

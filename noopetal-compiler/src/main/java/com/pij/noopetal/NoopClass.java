@@ -30,13 +30,6 @@ final class NoopClass implements GeneratedType {
         this.sourceType = notNull(sourceType);
     }
 
-    private static MethodSpec.Builder createOverridingMethod(ExecutableElement element) {
-        final MethodSpec.Builder result = MethodSpec.overriding(element);
-        final String literal = ClassGenerationUtil.defaultReturnLiteral(element.getReturnType());
-        if (literal != null) result.addStatement("return $L", literal);
-        return result;
-    }
-
     @Override
     public TypeElement getSourceType() {
         return sourceType.getTypeElement();
@@ -65,7 +58,7 @@ final class NoopClass implements GeneratedType {
         result.addJavadoc("\n");
         result.addSuperinterface(getDecoratedTypeName());
 
-        for (Element element : sourceType.getEnclosedElements()) {
+        for (Element element : sourceType.getAllEnclosedElements()) {
             if (element.getKind() == ElementKind.METHOD) {
                 MethodSpec method = createOverridingMethod((ExecutableElement)element).build();
                 result.addMethod(method);
@@ -77,6 +70,13 @@ final class NoopClass implements GeneratedType {
 
     private TypeName getDecoratedTypeName() {
         return TypeName.get(sourceType.asType());
+    }
+
+    private MethodSpec.Builder createOverridingMethod(ExecutableElement element) {
+        final MethodSpec.Builder result = MethodSpec.overriding(element);
+        final String literal = ClassGenerationUtil.defaultReturnLiteral(element.getReturnType());
+        if (literal != null) result.addStatement("return $L", literal);
+        return result;
     }
 
 }

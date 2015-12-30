@@ -78,10 +78,11 @@ class DecorClass implements GeneratedType {
         result.addMethod(createConstructor());
         if (mutable) result.addMethod(createSetter());
 
-        for (Element element : sourceType.getEnclosedElements()) {
+        // Extracts methods elements and generate code from the element list.
+        for (Element element : sourceType.getAllEnclosedElements()) {
             if (element.getKind() == ElementKind.METHOD) {
-                MethodSpec method = createOverridingMethod((ExecutableElement)element, decorated).build();
-                result.addMethod(method);
+                MethodSpec item = createOverridingMethod((ExecutableElement)element, decorated).build();
+                result.addMethod(item);
             }
         }
 

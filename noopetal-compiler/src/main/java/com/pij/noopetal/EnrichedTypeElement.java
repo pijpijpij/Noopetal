@@ -3,6 +3,8 @@ package com.pij.noopetal;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.auto.common.MoreTypes;
+import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 
@@ -10,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.lang.model.element.Element;
@@ -103,8 +106,35 @@ class EnrichedTypeElement {
         return typeElement.getQualifiedName().toString().substring(packageLen);
     }
 
+    /**
+     * @return all elements in this type.
+     */
+    @NonNull
     public List<? extends Element> getEnclosedElements() {
         return typeElement.getEnclosedElements();
+    }
+
+    /**
+     * @return the elements declared in this type and its parent types.
+     */
+    @NonNull
+    public List<Element> getAllEnclosedElements() {
+        List<Element> result = new ArrayList<>();
+        collectEnclosedElements(result);
+        return result;
+    }
+
+    /**
+     * Collects the elements declared in this type and its parent types. This form is to improve speed.
+     * @param collector where to place the elements found.
+     */
+    private void collectEnclosedElements(@NonNull List<Element> collector) {
+        for (EnrichedTypeElement parent : getParentInterfaces()) {
+            if (parent != null) {
+                parent.collectEnclosedElements(collector);
+            }
+        }
+        collector.addAll(getEnclosedElements());
     }
 
     public TypeMirror asType() {
@@ -113,6 +143,16 @@ class EnrichedTypeElement {
 
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
         return typeElement.getAnnotation(annotationType);
+    }
+
+    @NonNull
+    public List<EnrichedTypeElement> getParentInterfaces() {
+        ImmutableSet<TypeElement> parents = MoreTypes.asTypeElements(typeElement.getInterfaces());
+        List<EnrichedTypeElement> result = new ArrayList<>();
+        for (TypeElement parent : parents) {
+            result.add(new EnrichedTypeElement(parent, elementUtils));
+        }
+        return result;
     }
 
 }

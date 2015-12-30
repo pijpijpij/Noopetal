@@ -12,6 +12,7 @@ import static com.google.common.truth.Truth.assertAbout;
 import static com.google.testing.compile.JavaFileObjects.forSourceLines;
 import static com.google.testing.compile.JavaFileObjects.forSourceString;
 import static com.google.testing.compile.JavaSourceSubjectFactory.javaSource;
+import static com.google.testing.compile.JavaSourcesSubjectFactory.javaSources;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.ArrayUtils.addAll;
 
@@ -98,6 +99,33 @@ public class DecorTest {
                                                  "/**",
                                                  " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
                                                  "class DecoratingTest implements Test {",
+                                                 "",
+                                                 "private final Test decorated;",
+                                                 "",
+                                                 "public DecoratingTest(@NonNull final Test decorated) {",
+                                                 "this.decorated = decorated;",
+                                                 "}",
+                                                 "}");
+        assertGeneration(source, expected);
+
+    }
+
+    @Test
+    public void test_interfaceWithConstant_GeneratesEmptyClass() {
+        JavaFileObject source = forSourceString("test.Test",
+                                                Joiner.on('\n')
+                                                      .join("package test;",
+                                                            "@com.pij.noopetal.Decor",
+                                                            "public interface Test {",
+                                                            "String CONSTANT = \"some value\";",
+                                                            "}"));
+        JavaFileObject expected = forSourceLines("test/DecoratingTest",
+                                                 "package test;",
+                                                 "",
+                                                 "import android.support.annotation.NonNull;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class DecoratingTest implements Test {",
                                                  "",
                                                  "private final Test decorated;",
                                                  "",
@@ -444,6 +472,48 @@ public class DecorTest {
                                                  "}",
                                                  "}");
         assertGeneration(source, expected);
+    }
+
+    @Test
+    public void test_inheritsFromInterfaceAndMethodVoidWithNoArguments_CompilesAndGeneratesCallsDecorated() {
+        JavaFileObject sourceParent = forSourceLines("test.TestParent",
+                                                     "package test;",
+                                                     "public interface TestParent {",
+                                                     "void thisMethod();",
+                                                     "}");
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Decor",
+                                               "public interface Test extends TestParent {",
+                                               "void thatMethod();",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test/DecoratingTest",
+                                                 "package test;",
+                                                 "",
+                                                 "import android.support.annotation.NonNull;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class DecoratingTest implements Test {",
+                                                 "",
+                                                 "private final Test decorated;",
+                                                 "",
+                                                 "public DecoratingTest(@NonNull final Test decorated) {",
+                                                 "this.decorated = decorated;",
+                                                 "}",
+                                                 "@Override",
+                                                 "public void thisMethod() {",
+                                                 "decorated.thisMethod();",
+                                                 "}",
+                                                 "@Override",
+                                                 "public void thatMethod() {",
+                                                 "decorated.thatMethod();",
+                                                 "}",
+                                                 "}");
+        assertAbout(javaSources()).that(asList(sourceParent, source))
+                                  .processedWith(new NoopetalProcessor())
+                                  .compilesWithoutError()
+                                  .and()
+                                  .generatesSources(expected);
     }
 
 }
