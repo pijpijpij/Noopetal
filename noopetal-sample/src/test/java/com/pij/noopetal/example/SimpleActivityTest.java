@@ -1,26 +1,25 @@
 package com.pij.noopetal.example;
 
-import com.example.butterknife.R;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import butterknife.ButterKnife;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(RobolectricTestRunner.class) //
-@Config(manifest = "src/main/AndroidManifest.xml")
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class,
+        packageName = "com.pij.noopetal.example",
+        manifest = "src/main/AndroidManifest.xml")
 public class SimpleActivityTest {
 
     @Test
     public void verifyContentViewBinding() {
-        SimpleActivity activity = Robolectric.buildActivity(SimpleActivity.class) //
-                .create() //
-                .get();
+        SimpleActivity activity = Robolectric.buildActivity(SimpleActivity.class).create().get();
 
         assertThat(activity.title.getId()).isEqualTo(R.id.title);
         assertThat(activity.subtitle.getId()).isEqualTo(R.id.subtitle);

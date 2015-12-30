@@ -11,8 +11,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.butterknife.R;
-
 import java.util.List;
 
 import butterknife.Bind;

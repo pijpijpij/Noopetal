@@ -3,21 +3,6 @@ subprojects {
         group = "com.pij"
         version = "1.2.2-SNAPSHOT"
 
-        buildscript {
-            dependencies {
-                classpath 'com.android.tools.build:gradle:1.5.0'
-                classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-            }
-        }
-}
-
-ext {
-    minSdkVersion = 8
-    targetSdkVersion = 23
-    compileSdkVersion = 23
-    buildToolsVersion = '23.0.1'
-    sourceCompatibilityVersion = JavaVersion.VERSION_1_7
-    targetCompatibilityVersion = JavaVersion.VERSION_1_7
 }
 
 ext.deps = [
@@ -35,8 +20,6 @@ ext.deps = [
 
         // Test dependencies
         junit              : 'junit:junit:4.12',
-        truth              : 'com.google.truth:truth:0.28',
-        robolectric        : 'org.robolectric:robolectric:3.0',
         compiletesting     : 'com.google.testing.compile:compile-testing:0.8',
         autoservice        : 'com.google.auto.service:auto-service:1.0-rc2',
         autocommon         : 'com.google.auto:auto-common:0.5'

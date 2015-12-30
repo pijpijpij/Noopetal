@@ -1,3 +1,5 @@
+import org.gradle.internal.jvm.Jvm
+
 apply plugin: 'java'
 apply plugin: 'maven'
 
@@ -11,9 +13,7 @@ dependencies {
     compile deps.commons_collections
 
     testCompile deps.junit
-    testCompile deps.truth
-    testCompile deps.robolectric
     testCompile deps.compiletesting
-    testCompile files(org.gradle.internal.jvm.Jvm.current().getToolsJar())
+    testCompile files(Jvm.current().getToolsJar())
 }
 
