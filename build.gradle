@@ -1,8 +1,30 @@
-subprojects {
-    project ->
-        group = "com.pij"
-        version = "1.2.4-SNAPSHOT"
+buildscript {
+    dependencies {
+        classpath 'pl.allegro.tech.build:axion-release-plugin:1.3.4'
+        classpath 'org.jacoco:org.jacoco.core:0.7.4.201502262128'
+    }
+}
 
+apply plugin: 'pl.allegro.tech.build.axion-release'
+
+group = "com.pij"
+
+scmVersion {
+    tag {
+        prefix = ''
+    }
+
+    versionCreator 'versionWithBranch'
+    hooks {
+        pre 'fileUpdate', [file: 'README.md', pattern: { v, p -> /(version.) $v/ }, replacement: { v, p -> "\$1 $v" }]
+        pre 'commit', { v, p -> "Automatic update for release $v" }
+        post 'push'
+    }
+}
+
+allprojects {
+    project.version = scmVersion.version
+    project.group = rootProject.group
 }
 
 ext.deps = [

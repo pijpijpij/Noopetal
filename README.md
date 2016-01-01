@@ -91,10 +91,47 @@ public class ExampleInterfaceFactory {
 }
 ```
 
-# Miscellaneous
+# Building and Relesing the app
 
-## Build status
+## Automated build status
 Thanks [Travis-CI](https://travis-ci.org) for providing a build system. The status of the last master build: [![Build Status](https://travis-ci.org/pijpijpij/Noopetal.svg?branch=master)](https://travis-ci.org/pijpijpij/Noopetal)
+
+## Build and install the app locally?
+
+`> gradlew build` builds the app
+`> gradlew install` places it in the local Maven repository.
+
+## How to release the app?
+
+That means creating a release version and prepare it for the next release increment. That includes setting up its SCM.
+Releases are tagged with their version number (e.g. release 5.3.2 is build from he version tagged `5.3.2` in Git).
+
+1. Checkout the head of `master` and start a command prompt
+1. Run pre-release checks. Do a full build to ensure the code is good to be released.
+
+    `> gradlew build`
+
+1. Release (assuming authentication with SSH keys is already setup. If not, Bitbucket explained it well [here](https://confluence.atlassian.com/x/YwV9E)):
+
+    `> gradlew release`
+
+    Make sure the last output line indicates it's been *pushed to origin*.
+
+    To set the release number, rather than accept the usal bug-level increment, add the following property on the command line:
+
+    `-Prelease.forceVersion=k.m.n`
+
+1. Build the release version of the app to take the new version number into account:
+
+    `> gradlew build`
+
+
+The overall command is:
+
+    `> gradlew build release`
+    `> gradlew build install`
+
+# Miscellaneous
 
 ## Next features
 Support annotating interfaces with super-interfaces.

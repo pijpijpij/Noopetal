@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 1.2.4
+-------------
+
+  * Using [axion-release](https://github.com/allegro/axion-release-plugin) to build .
+
 Version 1.2.3
 -------------
 
