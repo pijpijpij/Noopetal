@@ -332,7 +332,7 @@ public class DecorTest {
     }
 
     @Test
-    public void test_specifiedFullClassname_CompilesAndGeneratesSpecificiedClass() {
+    public void test_specifiedFullClassname_CompilesAndGeneratesSpecifiedClass() {
         JavaFileObject source = forSourceLines("test.Test",
                                                "package test;",
                                                "@com.pij.noopetal.Decor(\"another.pckg.AnotherClass\")",
@@ -356,7 +356,7 @@ public class DecorTest {
     }
 
     @Test
-    public void test_specifiedSimpleClassName_CompilesAndGeneratesSpecificiedClassInSamePackage() {
+    public void test_specifiedSimpleClassName_CompilesAndGeneratesSpecifiedClassInSamePackage() {
         JavaFileObject source = forSourceLines("test.Test",
                                                "package test;",
                                                "@com.pij.noopetal.Decor(\"AnotherClass\")",
@@ -379,7 +379,7 @@ public class DecorTest {
     }
 
     @Test
-    public void test_specifiedDottedClassName_CompilesAndGeneratesSpecificiedClassInSamePackage() {
+    public void test_specifiedDottedClassName_CompilesAndGeneratesSpecifiedClassInSamePackage() {
         JavaFileObject source = forSourceLines("test.Test",
                                                "package test;",
                                                "@com.pij.noopetal.Decor(\".AnotherClass\")",
@@ -402,7 +402,7 @@ public class DecorTest {
     }
 
     @Test
-    public void test_specifiedPackage_CompilesAndGeneratesInSpecificiedPackageWithStandardName() {
+    public void test_specifiedPackage_CompilesAndGeneratesInSpecifiedPackageWithStandardName() {
         JavaFileObject source = forSourceLines("test.Test",
                                                "package test;",
                                                "@com.pij.noopetal.Decor(\"another.pckg.\")",
