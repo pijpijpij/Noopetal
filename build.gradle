@@ -34,7 +34,7 @@ ext.deps = [
         support_annotations: 'com.android.support:support-annotations:23.0.1',
 
         // Square
-        javapoet           : 'com.squareup:javapoet:1.4.0',
+        javapoet           : 'com.squareup:javapoet:1.6.1',
 
         // Miscellaneous
         commons_lang       : 'org.apache.commons:commons-lang3:3.4',
@@ -42,7 +42,7 @@ ext.deps = [
 
         // Test dependencies
         junit              : 'junit:junit:4.12',
-        compiletesting     : 'com.google.testing.compile:compile-testing:0.8',
+        compiletesting     : 'com.google.testing.compile:compile-testing:0.9',
         autoservice        : 'com.google.auto.service:auto-service:1.0-rc2',
-        autocommon         : 'com.google.auto:auto-common:0.5'
+        autocommon         : 'com.google.auto:auto-common:0.6'
 ]
