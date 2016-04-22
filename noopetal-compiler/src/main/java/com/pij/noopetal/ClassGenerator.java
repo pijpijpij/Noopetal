@@ -22,6 +22,7 @@ import javax.annotation.processing.Processor;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 
 import static javax.lang.model.element.ElementKind.INTERFACE;
 import static javax.tools.Diagnostic.Kind.ERROR;
@@ -57,6 +58,10 @@ abstract class ClassGenerator implements BasicAnnotationProcessor.ProcessingStep
 
     private Elements getElementUtils() {
         return processingEnv.getElementUtils();
+    }
+
+    private Types getTypeUtils() {
+        return processingEnv.getTypeUtils();
     }
 
     private Filer getFiler() {
@@ -141,7 +146,8 @@ abstract class ClassGenerator implements BasicAnnotationProcessor.ProcessingStep
         TypeElement typeElement = (TypeElement)element;
 
         GeneratedType result = createGeneratedClass(new EnrichedTypeElement(typeElement, getElementUtils()),
-                                                    processorClass);
+                                                    processorClass,
+                                                    getTypeUtils());
         targetClasses.add(result);
     }
 
@@ -149,10 +155,11 @@ abstract class ClassGenerator implements BasicAnnotationProcessor.ProcessingStep
      * Assumes the element is valid. It uses the value specified in the annotation, if it has a package. Otherwise uses
      * the element's package.
      * @param element annotated interface, assumed valid
+     * @param types   type utility provided by the processor environment
      * @return a representation of the generated class.
      */
     protected abstract GeneratedType createGeneratedClass(EnrichedTypeElement element,
-                                                          Class<? extends Processor> processorClass);
+                                                          Class<? extends Processor> processorClass, Types types);
 
     private void error(Element element, String message, Object... args) {
         if (args.length > 0) {

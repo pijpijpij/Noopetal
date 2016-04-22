@@ -516,4 +516,88 @@ public class DecorTest {
                                   .generatesSources(expected);
     }
 
+    @Test
+    public void test_inheritsFromGenericInterfaceAndMethodVoidWithNoArguments_CompilesAndGeneratesCallsDecorated() {
+        JavaFileObject sourceParent = forSourceLines("test.TestParent",
+                                                     "package test;",
+                                                     "public interface TestParent<T> {",
+                                                     "void thisMethod();",
+                                                     "}");
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Decor",
+                                               "public interface Test extends TestParent<String> {",
+                                               "void thatMethod();",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test/DecoratingTest",
+                                                 "package test;",
+                                                 "",
+                                                 "import android.support.annotation.NonNull;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class DecoratingTest implements Test {",
+                                                 "",
+                                                 "private final Test decorated;",
+                                                 "",
+                                                 "public DecoratingTest(@NonNull final Test decorated) {",
+                                                 "this.decorated = decorated;",
+                                                 "}",
+                                                 "@Override",
+                                                 "public void thisMethod() {",
+                                                 "decorated.thisMethod();",
+                                                 "}",
+                                                 "@Override",
+                                                 "public void thatMethod() {",
+                                                 "decorated.thatMethod();",
+                                                 "}",
+                                                 "}");
+        assertAbout(javaSources()).that(asList(sourceParent, source))
+                                  .processedWith(new NoopetalProcessor())
+                                  .compilesWithoutError()
+                                  .and()
+                                  .generatesSources(expected);
+    }
+
+    @Test
+    public void test_inheritsFromGenericInterfaceAndMethodReturnsGeneric_CompilesAndGeneratesCallsDecorated() {
+        JavaFileObject sourceParent = forSourceLines("test.TestParent",
+                                                     "package test;",
+                                                     "public interface TestParent<T> {",
+                                                     "T thisMethod();",
+                                                     "}");
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Decor",
+                                               "public interface Test extends TestParent<String> {",
+                                               "void thatMethod();",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test/DecoratingTest",
+                                                 "package test;",
+                                                 "",
+                                                 "import android.support.annotation.NonNull;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class DecoratingTest implements Test {",
+                                                 "",
+                                                 "private final Test decorated;",
+                                                 "",
+                                                 "public DecoratingTest(@NonNull final Test decorated) {",
+                                                 "this.decorated = decorated;",
+                                                 "}",
+                                                 "@Override",
+                                                 "public String thisMethod() {",
+                                                 "return decorated.thisMethod();",
+                                                 "}",
+                                                 "@Override",
+                                                 "public void thatMethod() {",
+                                                 "decorated.thatMethod();",
+                                                 "}",
+                                                 "}");
+        assertAbout(javaSources()).that(asList(sourceParent, source))
+                                  .processedWith(new NoopetalProcessor())
+                                  .compilesWithoutError()
+                                  .and()
+                                  .generatesSources(expected);
+    }
+
 }

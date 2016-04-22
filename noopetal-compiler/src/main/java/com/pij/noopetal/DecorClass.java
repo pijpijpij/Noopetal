@@ -16,7 +16,9 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.util.Types;
 
 import static com.pij.noopetal.ClassGenerationUtil.createGeneratedAnnotation;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -31,15 +33,17 @@ class DecorClass implements GeneratedType {
     private final String classPackage;
     private final String className;
     private final Class<? extends Processor> processorClass;
+    private final Types types;
     private final EnrichedTypeElement sourceType;
     private final boolean mutable;
 
     public DecorClass(@NonNull String classPackage, @NonNull String className, @NonNull EnrichedTypeElement sourceType,
-                      @NonNull Class<? extends Processor> processorClass, boolean mutable) {
+                      @NonNull Class<? extends Processor> processorClass, @NonNull Types types, boolean mutable) {
         this.mutable = mutable;
         this.classPackage = notNull(classPackage);
         this.className = notNull(className);
         this.processorClass = notNull(processorClass);
+        this.types = notNull(types);
         this.sourceType = notNull(sourceType);
     }
 
@@ -105,7 +109,8 @@ class DecorClass implements GeneratedType {
      * Code may be sub-optimal.
      */
     private MethodSpec.Builder createOverridingMethod(ExecutableElement element, FieldSpec decorated) {
-        final MethodSpec.Builder result = MethodSpec.overriding(element);
+        // TODO fix the cast
+        final MethodSpec.Builder result = MethodSpec.overriding(element, (DeclaredType)getSourceType().asType(), types);
         String parameters = "";
         boolean firstParameter = true;
         for (ParameterSpec parameter : result.build().parameters) {

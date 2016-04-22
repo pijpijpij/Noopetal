@@ -8,6 +8,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
+import javax.lang.model.util.Types;
 
 import static com.pij.noopetal.ClassGenerationUtil.extractPackageAndClassName;
 
@@ -39,8 +40,8 @@ final class DecorProcessingStep extends ClassGenerator {
      * @return a representation of the generated class.
      */
     @Override
-    protected GeneratedType createGeneratedClass(EnrichedTypeElement element,
-                                                  Class<? extends Processor> processorClass) {
+    protected GeneratedType createGeneratedClass(EnrichedTypeElement element, Class<? extends Processor> processorClass,
+                                                 Types types) {
 
         final String specifiedClass = element.getAnnotation(getSupportedAnnotation()).value();
         final Pair<String, String> packageAndClassName = extractPackageAndClassName(specifiedClass);
@@ -55,7 +56,10 @@ final class DecorProcessingStep extends ClassGenerator {
         }
         return new DecorClass(packageName,
                               className,
-                              element, processorClass, element.getAnnotation(getSupportedAnnotation()).mutable());
+                              element,
+                              processorClass,
+                              types,
+                              element.getAnnotation(getSupportedAnnotation()).mutable());
     }
 
     @NonNull
