@@ -110,7 +110,7 @@ class DecorClass implements GeneratedType {
      */
     private MethodSpec.Builder createOverridingMethod(ExecutableElement element, FieldSpec decorated) {
         // TODO fix the cast
-        final MethodSpec.Builder result = MethodSpec.overriding(element, (DeclaredType)getSourceType().asType(), types);
+        MethodSpec.Builder result = MethodSpec.overriding(element, (DeclaredType)getSourceType().asType(), types);
         String parameters = "";
         boolean firstParameter = true;
         for (ParameterSpec parameter : result.build().parameters) {

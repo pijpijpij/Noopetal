@@ -426,4 +426,72 @@ public class NoopTest {
                                   .generatesSources(expected);
     }
 
+    @Test
+    public void test_inheritsFromGenericInterfaceAndMethodVoidWithNoArguments_CompilesAndGeneratesEmpty() {
+        JavaFileObject sourceParent = forSourceLines("test.TestParent",
+                                                     "package test;",
+                                                     "public interface TestParent<T> {",
+                                                     "void thisMethod();",
+                                                     "}");
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Noop",
+                                               "public interface Test extends TestParent<String> {",
+                                               "void thatMethod();",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test/DecoratingTest",
+                                                 "package test;",
+                                                 "",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class NoopTest implements Test {",
+                                                 "",
+                                                 "@Override",
+                                                 "public void thisMethod() {",
+                                                 "}",
+                                                 "@Override",
+                                                 "public void thatMethod() {",
+                                                 "}",
+                                                 "}");
+        assertAbout(javaSources()).that(asList(sourceParent, source))
+                                  .processedWith(new NoopetalProcessor())
+                                  .compilesWithoutError()
+                                  .and()
+                                  .generatesSources(expected);
+    }
+
+    @Test
+    public void test_inheritsFromGenericInterfaceAndMethodReturnsGeneric_CompilesAndGeneratesNullReturnValue() {
+        JavaFileObject sourceParent = forSourceLines("test.TestParent",
+                                                     "package test;",
+                                                     "public interface TestParent<T> {",
+                                                     "T thisMethod();",
+                                                     "}");
+        JavaFileObject source = forSourceLines("test.Test",
+                                               "package test;",
+                                               "@com.pij.noopetal.Noop",
+                                               "public interface Test extends TestParent<String> {",
+                                               "void thatMethod();",
+                                               "}");
+        JavaFileObject expected = forSourceLines("test/DecoratingTest",
+                                                 "package test;",
+                                                 "/**",
+                                                 " * @javax.annotation.Generated(\"com.pij.noopetal.NoopetalProcessor\") */",
+                                                 "public class NoopTest implements Test {",
+                                                 "",
+                                                 "@Override",
+                                                 "public String thisMethod() {",
+                                                 "return null;",
+                                                 "}",
+                                                 "@Override",
+                                                 "public void thatMethod() {",
+                                                 "}",
+                                                 "}");
+        assertAbout(javaSources()).that(asList(sourceParent, source))
+                                  .processedWith(new NoopetalProcessor())
+                                  .compilesWithoutError()
+                                  .and()
+                                  .generatesSources(expected);
+    }
+
 }

@@ -11,6 +11,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.util.Types;
 
 import static com.pij.noopetal.ClassGenerationUtil.createGeneratedAnnotation;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -21,12 +23,14 @@ final class NoopClass implements GeneratedType {
     private final String className;
     private final Class<? extends Processor> processorClass;
     private final EnrichedTypeElement sourceType;
+    private final Types types;
 
     public NoopClass(@NonNull String classPackage, @NonNull String className, @NonNull EnrichedTypeElement sourceType,
-                     @NonNull Class<? extends Processor> processorClass) {
+                     @NonNull Class<? extends Processor> processorClass, @NonNull Types types) {
         this.classPackage = notNull(classPackage);
         this.className = notNull(className);
         this.processorClass = notNull(processorClass);
+        this.types = notNull(types);
         this.sourceType = notNull(sourceType);
     }
 
@@ -73,8 +77,9 @@ final class NoopClass implements GeneratedType {
     }
 
     private MethodSpec.Builder createOverridingMethod(ExecutableElement element) {
-        final MethodSpec.Builder result = MethodSpec.overriding(element);
-        final String literal = ClassGenerationUtil.defaultReturnLiteral(element.getReturnType());
+        // TODO fix the cast
+        MethodSpec.Builder result = MethodSpec.overriding(element, (DeclaredType)getSourceType().asType(), types);
+        String literal = ClassGenerationUtil.defaultReturnLiteral(element.getReturnType());
         if (literal != null) result.addStatement("return $L", literal);
         return result;
     }

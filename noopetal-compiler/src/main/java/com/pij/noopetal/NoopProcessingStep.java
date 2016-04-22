@@ -55,7 +55,7 @@ final class NoopProcessingStep extends ClassGenerator {
         if (className == null) {
             className = element.calculateClassNameWithPrefix(getClassPrefix());
         }
-        return new NoopClass(packageName, className, element, processorClass);
+        return new NoopClass(packageName, className, element, processorClass, types);
     }
 
     @NonNull
