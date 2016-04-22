@@ -4,7 +4,7 @@ Change Log
 Version 1.2.5
 -------------
 
-  * `@Decor' supports direct parent as instance of Generic class, e.g. `public interface Target extends List<String> {}`.
+  * `@Noop` and `@Decor' supports direct parent as instance of Generic class, e.g. `public interface Target extends List<String> {}`.
 
 Version 1.2.4
 -------------
