@@ -1,6 +1,6 @@
 # Noop et Al
 
-<img src="miscellaneous/logo.jpg" alt="Logo" width="500">
+<img src="miscellaneous/flower_12_rose_petals___stock_by_inadesign_stock.png" alt="Logo" >
 
 This small library generates standard implementations of a given interface:
 
@@ -17,7 +17,7 @@ package com.company.example;
 @Noop
 @Decor
 @Factory
-interface ExampleInterface {
+interface Example {
 
   void setProperty(String value);
   
@@ -34,7 +34,7 @@ package com.company.example;
 /**
  * @Generated ..
  */
-public class NoopExampleInterface {
+public class NoopExample {
   
   void setProperty(String ignored) { }
   
@@ -59,10 +59,10 @@ package com.company.example;
 /**
  * @Generated ..
  */
-public class DecoratingExampleInterface {
-  private final ExampleInterface decorated;
+public class DecoratingExample {
+  private final Example decorated;
   
-  public DecoratingExampleInterface(@NonNull ExampleInterface decorated) {
+  public DecoratingExample(@NonNull Example decorated) {
     this.decorated = decorated;
   }
   
@@ -84,14 +84,14 @@ package com.company.example;
 /**
  * @Generated ..
  */
-public class ExampleInterfaceFactory {
+public class ExampleFactory {
   
-  ExampleInterface createExampleInterface();
+  Example createExample();
 
 }
 ```
 
-# Building and Relesing the app
+# Building and Releasing the app
 
 ## Automated build status
 Thanks [Travis-CI](https://travis-ci.org) for providing a build system. The status of the last master build: [![Build Status](https://travis-ci.org/pijpijpij/Noopetal.svg?branch=master)](https://travis-ci.org/pijpijpij/Noopetal)
@@ -109,11 +109,11 @@ Releases are tagged with their version number (e.g. release 5.3.2 is build from 
 1. Checkout the head of `master` and start a command prompt
 1. Run pre-release checks. Do a full build to ensure the code is good to be released.
 
-    `> gradlew build`
+    `> ./gradlew build`
 
 1. Release (assuming authentication with SSH keys is already setup. If not, Bitbucket explained it well [here](https://confluence.atlassian.com/x/YwV9E)):
 
-    `> gradlew release`
+    `> ./gradlew release`
 
     Make sure the last output line indicates it's been *pushed to origin*.
 
@@ -123,18 +123,17 @@ Releases are tagged with their version number (e.g. release 5.3.2 is build from 
 
 1. Build the release version of the app to take the new version number into account:
 
-    `> gradlew build`
+    `> ./gradlew build`
 
 
 The overall command is:
 
-    `> gradlew build release`
-    `> gradlew build install`
+    `> ./gradlew build release`
+    `> ./gradlew build install`
 
 # Miscellaneous
 
 ## Next features
-Support annotating interfaces with super-interfaces.
 Generate a decorator for non-final classes with non-final public methods.
 
 
@@ -147,27 +146,14 @@ Then, in a Maven project:
 ```xml
 <dependency>
   <groupId>com.pij</groupId>
-  <artifactId>com.pij.noopetal</artifactId>
-  <version>1.2.0</version>
-</dependency>
-```
-or Gradle for a Java project:
-```groovy
-compile 'com.pij:com.pij.noopetal:1.2.0'
-```
-
-For the SNAPSHOT version:
-```xml
-<dependency>
-  <groupId>com.pij</groupId>
-  <artifactId>com.pij.noopetal</artifactId>
-  <version>1.2.0</version>
+  <artifactId>noopetal-annotations</artifactId>
+  <version>1.2.5</version>
 </dependency>
 <dependency>
   <groupId>com.pij</groupId>
-  <artifactId>com.pij.noopetal-compiler</artifactId>
-  <version>1.2.0</version>
-  <optional>true</optional>
+  <artifactId>noopetal-compiler</artifactId>
+  <version>1.2.5</version>
+  <scope>provided</scope>
 </dependency>
 ```
 or Gradle for an Android project:
@@ -181,8 +167,8 @@ buildscript {
 apply plugin: 'com.neenbedankt.android-apt'
 
 dependencies {
-  compile 'com.pij:com.pij.noopetal:1.2.0'
-  apt 'com.pij:com.pij.noopetal-compiler:1.2.0'
+  compile 'com.pij:noopetal-annotations:1.2.5'
+  apt 'com.pij:noopetal-compiler:1.2.5'
 }
 ```
 
@@ -205,6 +191,11 @@ Finally, I started that project from [Butterknife](https://github.com/JakeWharto
 
 
 ## Other Licenses
+
+Image by [Brenda Clarke](http://inadesign-stock.deviantart.com/). Not sure what the license is, but it's available for public download, so I'll assume I can use it.
+
+Inspiration from Butterknife
+
     Copyright 2013 Jake Wharton
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -219,6 +210,8 @@ Finally, I started that project from [Butterknife](https://github.com/JakeWharto
     See the License for the specific language governing permissions and
     limitations under the License.
 
-
+Annotation processing tools from Google.
+Apache still rocks!
+...
 
 

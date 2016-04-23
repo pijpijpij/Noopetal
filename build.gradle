@@ -16,7 +16,8 @@ scmVersion {
 
     versionCreator 'versionWithBranch'
     hooks {
-        pre 'fileUpdate', [file: 'README.md', pattern: { v, p -> /(version.) $v/ }, replacement: { v, p -> "\$1 $v" }]
+        pre 'fileUpdate', [file: 'README.md', pattern: { previous, context -> />$previous<\// }, replacement: { current, context -> ">$current</" }]
+        pre 'fileUpdate', [file: 'README.md', pattern: { previous, context -> /:$previous'/ }, replacement: { current, context -> ":$current\'" }]
         pre 'commit', { v, p -> "Automatic update for release $v" }
         post 'push'
     }
