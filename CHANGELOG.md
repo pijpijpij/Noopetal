@@ -1,10 +1,20 @@
 Change Log
 ==========
 
+Version 1.2.7
+-------------
+
+  * First deployment to Jitpack.io.
+
 Version 1.2.6
 -------------
 
   * Updated configuration so the project does not depend on an `init.gradle`.
+
+Version 1.2.5
+-------------
+
+  * `@Noop` and `@Decor` support direct parent as instance of Generic class, e.g. `public interface Target extends List<String> {}`.
 
 Version 1.2.4
 -------------
