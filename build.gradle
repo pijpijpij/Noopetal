@@ -7,7 +7,7 @@ buildscript {
 
 apply plugin: 'pl.allegro.tech.build.axion-release'
 
-group = "com.pij"
+group = "com.github.pijpijpij"
 
 scmVersion {
     tag {
@@ -21,6 +21,10 @@ scmVersion {
         pre 'commit', { v, p -> "Automatic update for release $v" }
         post 'push'
     }
+}
+
+subprojects {
+    apply plugin: 'maven'
 }
 
 allprojects {

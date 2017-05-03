@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/noopetal.iml" filepath="$PROJECT_DIR$/noopetal.iml" />
       <module fileurl="file://$PROJECT_DIR$/noopetal-annotations/noopetal-annotations.iml" filepath="$PROJECT_DIR$/noopetal-annotations/noopetal-annotations.iml" />
       <module fileurl="file://$PROJECT_DIR$/noopetal-compiler/noopetal-compiler.iml" filepath="$PROJECT_DIR$/noopetal-compiler/noopetal-compiler.iml" />
-      <module fileurl="file://$PROJECT_DIR$/noopetal-parent.iml" filepath="$PROJECT_DIR$/noopetal-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/noopetal-sample/noopetal-sample.iml" filepath="$PROJECT_DIR$/noopetal-sample/noopetal-sample.iml" />
     </modules>
   </component>

@@ -2,4 +2,3 @@ include ':noopetal-annotations'
 include ':noopetal-compiler'
 include ':noopetal-sample'
 
-rootProject.name = 'noopetal-parent'

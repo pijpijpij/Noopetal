@@ -19,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        applicationId 'com.pij.noopetal.example'
+        applicationId 'com.github.pij.noopetal.example'
         minSdkVersion 8
         //noinspection OldTargetApi
         targetSdkVersion 21
