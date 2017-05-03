@@ -1,10 +1,10 @@
 Change Log
 ==========
 
-Version 1.2.5
+Version 1.2.6
 -------------
 
-  * `@Noop` and `@Decor' supports direct parent as instance of Generic class, e.g. `public interface Target extends List<String> {}`.
+  * Updated configuration so the project does not depend on an `init.gradle`.
 
 Version 1.2.4
 -------------
