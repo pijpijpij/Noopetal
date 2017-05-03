@@ -147,12 +147,12 @@ Then, in a Maven project:
 <dependency>
   <groupId>com.pij</groupId>
   <artifactId>noopetal-annotations</artifactId>
-  <version>1.2.6</version>
+  <version>1.2.7</version>
 </dependency>
 <dependency>
   <groupId>com.pij</groupId>
   <artifactId>noopetal-compiler</artifactId>
-  <version>1.2.6</version>
+  <version>1.2.7</version>
   <scope>provided</scope>
 </dependency>
 ```
@@ -167,8 +167,8 @@ buildscript {
 apply plugin: 'com.neenbedankt.android-apt'
 
 dependencies {
-  compile 'com.pij:noopetal-annotations:1.2.6'
-  apt 'com.pij:noopetal-compiler:1.2.6'
+  compile 'com.pij:noopetal-annotations:1.2.7'
+  apt 'com.pij:noopetal-compiler:1.2.7'
 }
 ```
 
