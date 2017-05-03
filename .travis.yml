@@ -1,5 +1,5 @@
 language: android
-jdk: oraclejdk7
+jdk: oraclejdk8
 android:
   components:
     - build-tools-23.0.1
@@ -7,4 +7,9 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
 
-script: ./gradlew -I init.gradle clean assD testD
+before_install:
+  - mkdir $HOME/.gradle
+  - wget https://bitbucket.org/pijpijpij/init-gradle/raw/master/init.gradle -O $HOME/.gradle/init.gradle
+
+script:
+  ./gradlew clean assD testD
