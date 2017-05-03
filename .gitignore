@@ -23,3 +23,5 @@ proguard/
 # Log Files
 *.log
 /.idea/libraries/
+.idea/gradle.xml
+.idea/shelf/
