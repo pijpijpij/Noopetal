@@ -94,7 +94,11 @@ public class ExampleFactory {
 # Building and Releasing the app
 
 ## Automated build status
-Thanks [Travis-CI](https://travis-ci.org) for providing a build system. The status of the last master build: [![Build Status](https://travis-ci.org/pijpijpij/Noopetal.svg?branch=master)](https://travis-ci.org/pijpijpij/Noopetal)
+Thanks [Travis-CI](https://travis-ci.org) for providing a build system. The status of the last master build: 
+[![Build Status](https://travis-ci.org/pijpijpij/Noopetal.svg?branch=master)](https://travis-ci.org/pijpijpij/Noopetal)
+
+The binaries are also available thanks to [Jitpack](https://jitpack.io). The latest release there is 
+[![](https://jitpack.io/v/pijpijpij/Noopetal.svg)](https://jitpack.io/#pijpijpij/Noopetal).
 
 ## Build and install the app locally?
 
@@ -111,25 +115,29 @@ Releases are tagged with their version number (e.g. release 5.3.2 is build from 
 
     `> ./gradlew build`
 
-1. Release (assuming authentication with SSH keys is already setup. If not, Bitbucket explained it well [here](https://confluence.atlassian.com/x/YwV9E)):
+1. Release (assuming authentication with SSH keys is already setup. If not, Bitbucket explained it well 
+[here](https://confluence.atlassian.com/x/YwV9E)):
 
     `> ./gradlew release`
 
     Make sure the last output line indicates it's been *pushed to origin*.
 
-    To set the release number, rather than accept the usal bug-level increment, add the following property on the command line:
+    To set the release number, rather than accept the usual bug-level increment, add the following property on the 
+    command line:
 
     `-Prelease.forceVersion=k.m.n`
 
 1. Build the release version of the app to take the new version number into account:
 
-    `> ./gradlew build`
-
-
-The overall command is:
-
-    `> ./gradlew build release`
     `> ./gradlew build install`
+    
+    That is only needed if you do not want to wait for [Jitpack](https://jitpack.io/#pijpijpij/Noopetal/) to finish its 
+    build.
+
+
+The overall command is quite simple:
+
+    > ./gradlew build release
 
 # Miscellaneous
 
@@ -145,12 +153,12 @@ To use, download the source for the version of interest, build it and install it
 Then, in a Maven project:
 ```xml
 <dependency>
-  <groupId>com.pij</groupId>
+  <groupId>com.github.pijpijpij.noopetal</groupId>
   <artifactId>noopetal-annotations</artifactId>
   <version>1.2.8</version>
 </dependency>
 <dependency>
-  <groupId>com.pij</groupId>
+  <groupId>com.github.pijpijpij.noopetal</groupId>
   <artifactId>noopetal-compiler</artifactId>
   <version>1.2.8</version>
   <scope>provided</scope>
@@ -159,11 +167,12 @@ Then, in a Maven project:
 or Gradle for an Android project:
 ```groovy
 dependencies {
-  compile 'com.pij:noopetal-annotations:1.2.8'
-  annotationProcessor 'com.pij:noopetal-compiler:1.2.8'
+  compile 'com.github.pijpijpij.noopetal:noopetal-annotations:1.2.8'
+  annotationProcessor 'com.github.pijpijpij.noopetal:noopetal-compiler:1.2.8'
 }
 ```
-With an older Android Gradle plugin, use `apt`. 
+With an older Android Gradle plugin, use [Hugo Visser](https://bitbucket.org/hvisser/android-apt)'s `apt` instead of 
+`annotationProcessor`. 
 
 Finally, I started that project from [Butterknife](https://github.com/JakeWharton/butterknife)'s annotation processor.
 
