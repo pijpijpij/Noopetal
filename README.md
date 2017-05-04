@@ -158,19 +158,12 @@ Then, in a Maven project:
 ```
 or Gradle for an Android project:
 ```groovy
-buildscript {
-  dependencies {
-    classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-  }
-}
-
-apply plugin: 'com.neenbedankt.android-apt'
-
 dependencies {
   compile 'com.pij:noopetal-annotations:1.2.7'
-  apt 'com.pij:noopetal-compiler:1.2.7'
+  annotationProcessor 'com.pij:noopetal-compiler:1.2.7'
 }
 ```
+With an older Android Gradle plugin, use `apt`. 
 
 Finally, I started that project from [Butterknife](https://github.com/JakeWharton/butterknife)'s annotation processor.
 
