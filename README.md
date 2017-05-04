@@ -155,20 +155,20 @@ Then, in a Maven project:
 <dependency>
   <groupId>com.github.pijpijpij.noopetal</groupId>
   <artifactId>noopetal-annotations</artifactId>
-  <version>1.2.8</version>
+  <version>1.2.9</version>
 </dependency>
 <dependency>
   <groupId>com.github.pijpijpij.noopetal</groupId>
   <artifactId>noopetal-compiler</artifactId>
-  <version>1.2.8</version>
+  <version>1.2.9</version>
   <scope>provided</scope>
 </dependency>
 ```
 or Gradle for an Android project:
 ```groovy
 dependencies {
-  compile 'com.github.pijpijpij.noopetal:noopetal-annotations:1.2.8'
-  annotationProcessor 'com.github.pijpijpij.noopetal:noopetal-compiler:1.2.8'
+  compile 'com.github.pijpijpij.noopetal:noopetal-annotations:1.2.9'
+  annotationProcessor 'com.github.pijpijpij.noopetal:noopetal-compiler:1.2.9'
 }
 ```
 With an older Android Gradle plugin, use [Hugo Visser](https://bitbucket.org/hvisser/android-apt)'s `apt` instead of 
