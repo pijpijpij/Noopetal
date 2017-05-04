@@ -147,20 +147,20 @@ Then, in a Maven project:
 <dependency>
   <groupId>com.pij</groupId>
   <artifactId>noopetal-annotations</artifactId>
-  <version>1.2.7</version>
+  <version>1.2.8</version>
 </dependency>
 <dependency>
   <groupId>com.pij</groupId>
   <artifactId>noopetal-compiler</artifactId>
-  <version>1.2.7</version>
+  <version>1.2.8</version>
   <scope>provided</scope>
 </dependency>
 ```
 or Gradle for an Android project:
 ```groovy
 dependencies {
-  compile 'com.pij:noopetal-annotations:1.2.7'
-  annotationProcessor 'com.pij:noopetal-compiler:1.2.7'
+  compile 'com.pij:noopetal-annotations:1.2.8'
+  annotationProcessor 'com.pij:noopetal-compiler:1.2.8'
 }
 ```
 With an older Android Gradle plugin, use `apt`. 
