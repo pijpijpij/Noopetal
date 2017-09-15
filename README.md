@@ -34,7 +34,7 @@ package com.company.example;
 /**
  * @Generated ..
  */
-public class NoopExample {
+public class NoopExample implements Example {
   
   void setProperty(String ignored) { }
   
@@ -59,7 +59,7 @@ package com.company.example;
 /**
  * @Generated ..
  */
-public class DecoratingExample {
+public class DecoratingExample implements Example {
   private final Example decorated;
   
   public DecoratingExample(@NonNull Example decorated) {
