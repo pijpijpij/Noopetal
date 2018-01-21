@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.android.tools.build:gradle:3.0.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
 }
@@ -10,8 +10,6 @@ apply plugin: 'com.github.dcendents.android-maven'
 
 android {
     compileSdkVersion 25
-    //noinspection GradleDependency
-    buildToolsVersion '25.0.3'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -20,11 +18,17 @@ android {
 
     defaultConfig {
         applicationId 'com.github.pij.noopetal.example'
-        minSdkVersion 8
+        minSdkVersion 9
         //noinspection OldTargetApi
         targetSdkVersion 21
         versionCode calculateVersionCode(project.version)
         versionName project.version
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 
 //    buildTypes {
@@ -36,12 +40,13 @@ android {
 }
 
 dependencies {
-    compile deps.support_annotations
-    compile 'com.jakewharton:butterknife:7.0.1'
-    compile project(':noopetal-annotations')
+    implementation deps.support_annotations
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation project(':noopetal-annotations')
     annotationProcessor project(':noopetal-compiler')
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'com.google.truth:truth:0.28'
-    testCompile 'org.robolectric:robolectric:3.0'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'com.google.truth:truth:0.28'
+    testImplementation 'org.robolectric:robolectric:3.6.1'
 }

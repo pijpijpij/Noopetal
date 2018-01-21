@@ -8,16 +8,16 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SimpleAdapter extends BaseAdapter {
+class SimpleAdapter extends BaseAdapter {
 
     private static final String[] CONTENTS = "The quick brown fox jumps over the lazy dog".split(" ");
 
     private final LayoutInflater inflater;
 
-    public SimpleAdapter(Context context) {
+    SimpleAdapter(Context context) {
         inflater = LayoutInflater.from(context);
     }
 
@@ -59,11 +59,11 @@ public class SimpleAdapter extends BaseAdapter {
 
     static class ViewHolder {
 
-        @Bind(R.id.word)
+        @BindView(R.id.word)
         TextView word;
-        @Bind(R.id.length)
+        @BindView(R.id.length)
         TextView length;
-        @Bind(R.id.position)
+        @BindView(R.id.position)
         TextView position;
 
         ViewHolder(View view) {

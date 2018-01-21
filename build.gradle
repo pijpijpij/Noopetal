@@ -1,4 +1,15 @@
 buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        jcenter()
+        maven {
+            name "gradle-plugins"
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
     dependencies {
         classpath 'pl.allegro.tech.build:axion-release-plugin:1.6.0'
         classpath 'org.jacoco:org.jacoco.core:0.7.4.201502262128'
@@ -23,13 +34,38 @@ scmVersion {
     }
 }
 
-subprojects {
-    apply plugin: 'maven'
-}
-
 allprojects {
     project.version = scmVersion.version
     project.group = rootProject.group
+
+    buildscript {
+        repositories {
+            mavenLocal()
+            mavenCentral()
+            google()
+            jcenter()
+            maven {
+                name "gradle-plugins"
+                url "https://plugins.gradle.org/m2/"
+            }
+        }
+    }
+
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        jcenter()
+        // For Ice pick 3.*
+        maven { url "https://clojars.org/repo/" }
+        maven { url "https://jitpack.io" }
+    }
+
+}
+
+subprojects {
+    apply plugin: 'maven'
 }
 
 ext.deps = [

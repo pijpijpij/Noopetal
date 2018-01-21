@@ -10,8 +10,5 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
 
-before_install:
-  - wget https://bitbucket.org/pijpijpij/init-gradle/raw/master/init.gradle -O $HOME/.gradle/init.gradle
-
 script:
   ./gradlew :noopetal-compiler:test assD testD

@@ -13,11 +13,13 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import butterknife.OnLongClick;
+import butterknife.Unbinder;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -35,22 +37,21 @@ public class SimpleActivity extends Activity {
     };
 
     DummyContainer.InnerInterface dummy = new DummyContainer_NoopInnerInterface();
-    @Bind(R.id.title)
+    @BindView(R.id.title)
     TextView title;
-    @Bind(R.id.subtitle)
+    @BindView(R.id.subtitle)
     TextView subtitle;
-    @Bind(R.id.hello)
+    @BindView(R.id.hello)
     Button hello;
-    @Bind(R.id.list_of_things)
+    @BindView(R.id.list_of_things)
     ListView listOfThings;
-    @Bind(R.id.footer)
+    @BindView(R.id.footer)
     TextView footer;
 
-    @Bind({ R.id.title, R.id.subtitle, R.id.hello })
+    @BindViews({ R.id.title, R.id.subtitle, R.id.hello })
     List<View> headerViews;
-
+    Unbinder unbinder;
     private SimpleAdapter adapter;
-
 
     @OnClick(R.id.hello)
     void sayHello() {
@@ -74,7 +75,7 @@ public class SimpleActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.simple_activity);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         // Contrived code to use the bound fields.
         title.setText("Butter Knife");

@@ -7,17 +7,16 @@ import android.view.View;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.pij.noopetal.example.SimpleAdapter.ViewHolder;
 
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class/*,
-        packageName = "com.pij.noopetal.example",
-        manifest = "src/main/AndroidManifest.xml"*/)
+@RunWith(RobolectricTestRunner.class)
+//@Config(constants = BuildConfig.class,
+//        packageName = "com.pij.noopetal.example",
+//        manifest = "src/main/AndroidManifest.xml")
 public class SimpleAdapterTest {
 
     @Test
