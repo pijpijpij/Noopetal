@@ -8,7 +8,7 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'com.github.dcendents.android-maven'
 
-calculateVersionCode = { String versionName ->
+ext.calculateVersionCode = { String versionName ->
     def shortVersion = versionName.split("-", 2)[0]
     def strings = shortVersion.split("\\.", 3)
     def numbers = strings.collect {
